@@ -15,6 +15,7 @@ namespace JZQ.InventorySystem.Runtime.Core
         {
             Manager = new InventoryManager(config.BackpackLayoutConfig, config.QuickBarConfig);
             InventorySystem.Current = Manager;
+            GetComponent<SampleGUI>().Initialize(config.ItemDatabase);
         }
 
         private void OnDestroy()
