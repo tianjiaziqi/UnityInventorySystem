@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c52ee12207dc43509b3826899e25c8a, type: 3}
+  m_Name: Inventory System Config
+  m_EditorClassIdentifier: Assembly-CSharp::JZQ.InventorySystem.Runtime.Core.InventorySystemConfig
+  BackpackLayoutConfig: {fileID: 11400000, guid: 8baac57861e1e497bbcbeab2df04c247, type: 2}
+  QuickBarConfig: {fileID: 11400000, guid: 41d0f65bc46644bd88e95d60a6adf3bd, type: 2}
+  InventoryViewConfig: {fileID: 11400000, guid: a2deabd18f0e3457f87b9e877f0561ad, type: 2}
+  ItemDatabase: {fileID: 11400000, guid: 43379aad9262a492dbce5658bf22ff85, type: 2}

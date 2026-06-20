@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85d9285d1d20744658a1f1cf3e4e60d6, type: 3}
+  m_Name: Inventory View Config
+  m_EditorClassIdentifier: Assembly-CSharp::JZQ.InventorySystem.Runtime.Core.InventoryViewConfig
+  QuickBarDefaultIcon: {fileID: 771301413698976159, guid: 53ac1c61691c34db481227d65defa7ab, type: 3}
+  QuickBarSelectedIcon: {fileID: 8861954774590839415, guid: ad9d2dbff1f9d41368cf3e8a02c0f565, type: 3}
+  BackpackUnlockedIcon: {fileID: -319469171194908686, guid: b8ff1a0db99094e46af0707e9be7cbe5, type: 3}
+  BackpackLockedIcon: {fileID: 2610019732805151257, guid: 28986f553fb3149d3a13af5cc27e11fc, type: 3}
+  BackpackPreviewValidSprite: {fileID: -9128870364888033262, guid: e011fe04eca734035804dcb956488ee8, type: 3}
+  BackpackPreviewInvalidSprite: {fileID: -2034628858969555387, guid: 83c0520e750ac4b76bf8f59990fd8708, type: 3}
