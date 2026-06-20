@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace JZQ.InventorySystem.Runtime.Inventory.QuickBar
 {
-    [CreateAssetMenu(fileName = "QuickBarData", menuName = "ScriptableObjects/Backpack/QuickBarData")]
+    [CreateAssetMenu(menuName = "ScriptableObjects/InventorySystem/QuickBarConfig")]
     public class QuickBarConfig : ScriptableObject
     {
         public int slotCount;

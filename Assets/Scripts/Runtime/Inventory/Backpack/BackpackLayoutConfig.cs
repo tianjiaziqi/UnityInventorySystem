@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace JZQ.InventorySystem.Runtime.Inventory.Backpack
 {
-    [CreateAssetMenu(fileName = "BackpackData", menuName = "ScriptableObjects/Backpack/BackpackData")]
+    [CreateAssetMenu(menuName = "ScriptableObjects/InventorySystem/BackpackLayoutConfig")]
     public class BackpackLayoutConfig : ScriptableObject
     {
         public Vector2Int MaxSize;

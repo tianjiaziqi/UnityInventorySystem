@@ -2,6 +2,8 @@ using UnityEngine;
 
 namespace JZQ.InventorySystem.Runtime.Data
 {
+    [CreateAssetMenu(menuName = "ScriptableObjects/InventorySystem/ItemDefinition")]
+    
     public class ItemDefinition : ScriptableObject
     {
         public string ItemID;

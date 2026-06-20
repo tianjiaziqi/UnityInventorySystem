@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace JZQ.InventorySystem.Runtime.Core
 {
+    [CreateAssetMenu(menuName = "ScriptableObjects/InventorySystem/InventorySystemConfig")]
     public class InventorySystemConfig : ScriptableObject
     {
         public BackpackLayoutConfig BackpackLayoutConfig;

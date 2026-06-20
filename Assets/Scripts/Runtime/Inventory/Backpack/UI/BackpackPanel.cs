@@ -99,7 +99,7 @@ public class BackpackPanel : InventoryPanelBase
                 weightText.color = Color.red;
                 break;
         }
-        weightText.text = $"{currentWeight}\n/{maxWeight}";
+        weightText.text = $"{currentWeight}/{maxWeight}";
     }
     
 
