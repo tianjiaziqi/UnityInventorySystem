@@ -359,6 +359,7 @@ public class InventoryGridView : MonoBehaviour
     public void RotateCurrentDrag()
     {
         if(!isDragging || currentGhost == null) return;
+        if (!draggingItem.InstanceItem.Definition.CanRotate) return;
         currentRotated = !currentRotated;
         int width = currentRotated ? draggingItem.InstanceItem.Definition.Height : draggingItem.InstanceItem.Definition.Width;
         int height = currentRotated ? draggingItem.InstanceItem.Definition.Width : draggingItem.InstanceItem.Definition.Height;
