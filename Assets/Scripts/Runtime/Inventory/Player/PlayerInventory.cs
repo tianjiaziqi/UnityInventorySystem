@@ -216,6 +216,7 @@ namespace JZQ.InventorySystem.Runtime.Inventory.Player
 
         public bool CanConsumeByInstanceId(string instanceId, int count)
         {
+            if (count <= 0) return false;
             ItemInstance instance = mainGrid.GetItemInstance(instanceId);
             if (instance == null) return false;
             if (instance.StackCount < count) return false;
@@ -224,11 +225,13 @@ namespace JZQ.InventorySystem.Runtime.Inventory.Player
 
         public void ConsumeByInstanceId(string instanceId, int count)
         {
+            if (count <= 0) return;
             ItemInstance instance = mainGrid.GetItemInstance(instanceId);
             if (instance == null) return;
             if (instance.StackCount - count <= 0)
             {
                 mainGrid.Remove(instanceId);
+                UpdateQuickBar();
             }
             else
             {
@@ -236,6 +239,7 @@ namespace JZQ.InventorySystem.Runtime.Inventory.Player
             }
 
             RecalculateCurrentWeight();
+            InventoryRuntimeSystem.Events.InvokeEvent(EInventoryEventType.QuickBarChanged);
             InventoryRuntimeSystem.Events.InvokeEvent(EInventoryEventType.InventoryChange);
         }
     }

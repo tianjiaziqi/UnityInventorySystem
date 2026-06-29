@@ -24,12 +24,14 @@ public class QuickBar
 
     public void BindItem(int slotIndex, string instanceId)
     {
+        if (slotIndex < 0 || slotIndex >= slots.Length) return;
         slots[slotIndex].Bind(instanceId);
         events.InvokeEvent(EInventoryEventType.QuickBarChanged);
     }
 
     public void ClearSlot(int slotIndex)
     {
+        if (slotIndex < 0 || slotIndex >= slots.Length) return;
         if (slots[slotIndex].IsEmpty) return;
         slots[slotIndex].Clear();
         events.InvokeEvent(EInventoryEventType.QuickBarChanged);
@@ -37,6 +39,7 @@ public class QuickBar
 
     public void SwapSlots(int a, int b)
     {
+        if (a < 0 || a >= slots.Length || b < 0 || b >= slots.Length) return;
         if(slots[a].IsEmpty && slots[b].IsEmpty) return;
         if (slots[a].IsEmpty)
         {
