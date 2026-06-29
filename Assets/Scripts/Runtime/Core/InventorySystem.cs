@@ -21,11 +21,29 @@ namespace JZQ.InventorySystem.Runtime.Core
         
         public static void SetBackpackViewRuntime(IBackpackViewRuntime backpackViewRuntime) => BackpackViewRuntime = backpackViewRuntime;
 
-        public static void ClearCurrent(InventoryManager manager)
+        public static void ClearInterfaces(InventoryManager manager)
         {
             if (Runtime == manager)
             {
                 Runtime = null;
+            }
+
+            if (Events == manager)
+            {
+                Events = null;
+            }
+            if (BackpackReadOnly == manager)
+            {
+                BackpackReadOnly = null;
+            }
+            if (QuickBarReadOnly == manager)
+            {
+                QuickBarReadOnly = null;
+            }
+
+            if (BackpackViewRuntime == manager)
+            {
+                BackpackViewRuntime = null;
             }
         }
     }
