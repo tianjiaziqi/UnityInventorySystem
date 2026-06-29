@@ -9,7 +9,7 @@ using UnityEngine.Events;
 
 namespace JZQ.InventorySystem.Runtime.Inventory.Common
 {
-    public class InventoryManager
+    public class InventoryManager : IInventoryRuntime, IInventoryEventSource, IBackpackReadOnly, IQuickBarReadOnly, IBackpackViewRuntime
     {
         private PlayerInventory playerInventory;
         private BackpackLayoutConfig backpackConfig;
@@ -35,8 +35,8 @@ namespace JZQ.InventorySystem.Runtime.Inventory.Common
         {
             this.backpackConfig = backpackConfig;
             this.quickBarConfig = quickBarConfig;
-            playerInventory = new PlayerInventory(backpackConfig, quickBarConfig);
             eventCentre = new InventoryEventCentre();
+            playerInventory = new PlayerInventory(backpackConfig, quickBarConfig, this);
             playerInventory.Initialize();
         }
 

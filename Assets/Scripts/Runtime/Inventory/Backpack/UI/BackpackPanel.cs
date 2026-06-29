@@ -17,12 +17,16 @@ public class BackpackPanel : InventoryPanelBase
     private TMP_Text weightText;
     private Coroutine weightBlinkCoroutine;
     public UnityAction CloseRequested;
+    private IBackpackReadOnly backpackSources;
+    private IInventoryEventSource events;
 
     private bool isInitialized;
 
     private void Start()
     {
         GetUIComponent<Button>("CloseButton").onClick.AddListener(RequestClose);
+        backpackSources = InventoryRuntimeSystem.BackpackReadOnly;
+        events = InventoryRuntimeSystem.Events;
     }
 
     public void Initialize(BackpackLayoutConfig dataConfig, InventoryViewConfig viewConfig)
@@ -40,16 +44,16 @@ public class BackpackPanel : InventoryPanelBase
             Debug.LogError("BackpackPanel must be initialized before show");
             return;
         }
-        InventoryRuntimeSystem.Current.RegisterEvent(EInventoryEventType.InventoryUnlockChange, OnInventoryChanged);
-        InventoryRuntimeSystem.Current.RegisterEvent(EInventoryEventType.InventoryChange, OnInventoryChanged);
+        events.RegisterEvent(EInventoryEventType.InventoryUnlockChange, OnInventoryChanged);
+        events.RegisterEvent(EInventoryEventType.InventoryChange, OnInventoryChanged);
         UpdateWeightState();
         inventoryGridView.RefreshAll();
     }
 
     public override void Hide()
     {
-        InventoryRuntimeSystem.Current.UnregisterEvent(EInventoryEventType.InventoryUnlockChange, OnInventoryChanged);
-        InventoryRuntimeSystem.Current.UnregisterEvent(EInventoryEventType.InventoryChange, OnInventoryChanged);
+        events.UnregisterEvent(EInventoryEventType.InventoryUnlockChange, OnInventoryChanged);
+        events.UnregisterEvent(EInventoryEventType.InventoryChange, OnInventoryChanged);
         if(weightBlinkCoroutine != null) 
         {
             StopCoroutine(weightBlinkCoroutine);
@@ -65,9 +69,9 @@ public class BackpackPanel : InventoryPanelBase
 
     private void UpdateWeightState()
     {
-        float currentWeight = InventoryRuntimeSystem.Current.GetPlayerCurrentWeight();
-        float maxWeight = InventoryRuntimeSystem.Current.GetPlayerMaxWeight();
-        float ratio = InventoryRuntimeSystem.Current.GetPlayerWeightRatio();
+        float currentWeight = backpackSources.GetPlayerCurrentWeight();
+        float maxWeight = backpackSources.GetPlayerMaxWeight();
+        float ratio = backpackSources.GetPlayerWeightRatio();
         switch (ratio)
         {
             case < 0.95f:

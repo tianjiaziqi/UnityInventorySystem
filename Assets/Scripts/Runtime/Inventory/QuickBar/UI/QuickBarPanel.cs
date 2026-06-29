@@ -14,10 +14,13 @@ public class QuickBarPanel : InventoryPanelBase
     [SerializeField] private QuickBarGridView quickBarGridView;
     
     private bool isInitialized;
+    
+    private IInventoryEventSource events;
 
     public void Initialize(QuickBarConfig quickBarConfig, InventoryViewConfig viewConfig)
     {
         if (isInitialized) return;
+        events = InventoryRuntimeSystem.Events;
         quickBarGridView.InitializeIfNeed(quickBarConfig, viewConfig);
         isInitialized = true;
     }
@@ -29,17 +32,17 @@ public class QuickBarPanel : InventoryPanelBase
             return;
         }
         
-        InventoryRuntimeSystem.Current.RegisterEvent(EInventoryEventType.QuickBarChanged, OnQuickBarChange);
-        InventoryRuntimeSystem.Current.RegisterEvent(EInventoryEventType.QuickBarSelectionChanged, OnQuiBarSelectionChanged);
-        InventoryRuntimeSystem.Current.RegisterEvent(EInventoryEventType.InventoryChange, OnInventoryChanged);
+        events.RegisterEvent(EInventoryEventType.QuickBarChanged, OnQuickBarChange);
+        events.RegisterEvent(EInventoryEventType.QuickBarSelectionChanged, OnQuiBarSelectionChanged);
+        events.RegisterEvent(EInventoryEventType.InventoryChange, OnInventoryChanged);
         quickBarGridView.RefreshAll();
     }
 
     public override void Hide()
     {
-        InventoryRuntimeSystem.Current.UnregisterEvent(EInventoryEventType.QuickBarChanged, OnQuickBarChange);
-        InventoryRuntimeSystem.Current.UnregisterEvent(EInventoryEventType.QuickBarSelectionChanged, OnQuiBarSelectionChanged);
-        InventoryRuntimeSystem.Current.UnregisterEvent(EInventoryEventType.InventoryChange, OnInventoryChanged);
+        events.UnregisterEvent(EInventoryEventType.QuickBarChanged, OnQuickBarChange);
+        events.UnregisterEvent(EInventoryEventType.QuickBarSelectionChanged, OnQuiBarSelectionChanged);
+        events.UnregisterEvent(EInventoryEventType.InventoryChange, OnInventoryChanged);
     }
 
     private void OnQuickBarChange()

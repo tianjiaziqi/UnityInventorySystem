@@ -70,7 +70,7 @@ public class SampleInventoryUIController : MonoBehaviour
         int inputRead = inventoryInput.SlotSelection;
         if (inputRead is < 0 or > 9) return;
         
-        InventoryRuntimeSystem.Current.SetSelectedQuickSlot(inputRead);
+        InventoryRuntimeSystem.Runtime.SetSelectedQuickSlot(inputRead);
     }
 
     private void HandleScrollInput()
@@ -79,11 +79,11 @@ public class SampleInventoryUIController : MonoBehaviour
         if (inputRead == 0) return;
         if (inputRead > 0)
         {
-            InventoryRuntimeSystem.Current.SelectPreviousQuickSlot();
+            InventoryRuntimeSystem.Runtime.SelectPreviousQuickSlot();
         }
         else
         {
-            InventoryRuntimeSystem.Current.SelectNextQuickSlot();
+            InventoryRuntimeSystem.Runtime.SelectNextQuickSlot();
         }
     }
 

@@ -85,6 +85,8 @@ public class InventoryGridView : MonoBehaviour
 
     // 标记拖拽是否已经被外部处理
     private bool dragHandledExternally;
+    
+    private IBackpackViewRuntime backpackView;
 
 
     /// <summary>
@@ -100,6 +102,7 @@ public class InventoryGridView : MonoBehaviour
     /// </summary>
     private void Initialize(BackpackLayoutConfig dataConfig, InventoryViewConfig viewConfig)
     {
+        backpackView = InventoryRuntimeSystem.BackpackViewRuntime;
         this.dataConfig = dataConfig;
         this.viewConfig = viewConfig;
         cellSize = dataConfig.CellSize;
@@ -148,7 +151,7 @@ public class InventoryGridView : MonoBehaviour
         {
             for (int y = 0; y < slotCells.GetLength(1); y++)
             {
-                slotCells[x, y].SetUnlocked(InventoryRuntimeSystem.Current.IsPlayerGridUnlocked(x, y));
+                slotCells[x, y].SetUnlocked(backpackView.IsPlayerGridUnlocked(x, y));
             }
         }
     }
@@ -161,7 +164,7 @@ public class InventoryGridView : MonoBehaviour
     {
         HashSet<string> instanceIds = new();
         InventoryItemView itemView;
-        foreach (var placedItem in InventoryRuntimeSystem.Current.GetPlayerPlacedItems())
+        foreach (var placedItem in backpackView.GetPlayerPlacedItems())
         {
             instanceIds.Add(placedItem.InstanceItem.InstanceID);
             if (itemViews.ContainsKey(placedItem.InstanceItem.InstanceID))
@@ -344,7 +347,7 @@ public class InventoryGridView : MonoBehaviour
         }
         if (currentPlacementValid)
         {
-            InventoryRuntimeSystem.Current.TryMoveItemFromPlayer(draggingInstanceId, hoverGridPosition.x, hoverGridPosition.y, currentRotated);
+            backpackView.TryMoveItemFromPlayer(draggingInstanceId, hoverGridPosition.x, hoverGridPosition.y, currentRotated);
         }
         CancelCurrentDrag();
     }
@@ -437,7 +440,7 @@ public class InventoryGridView : MonoBehaviour
 
     private void ApplyPlacementPreview(Vector2Int hoveredGridPos)
     {
-        currentPlacementValid = InventoryRuntimeSystem.Current.CanMovePlayerItemTo(draggingInstanceId, hoveredGridPos.x, hoveredGridPos.y, currentRotated);
+        currentPlacementValid = backpackView.CanMovePlayerItemTo(draggingInstanceId, hoveredGridPos.x, hoveredGridPos.y, currentRotated);
         int width = currentRotated ? draggingItem.InstanceItem.Definition.Height : draggingItem.InstanceItem.Definition.Width;
         int height = currentRotated ? draggingItem.InstanceItem.Definition.Width : draggingItem.InstanceItem.Definition.Height;
         
@@ -478,7 +481,7 @@ public class InventoryGridView : MonoBehaviour
     public bool TryBindDraggedItemToQuickSlot(int slotIndex)
     {
         if (!isDragging) return false;
-        InventoryRuntimeSystem.Current.BindPlayerQuickSlot(slotIndex, draggingInstanceId);
+        backpackView.BindPlayerQuickSlot(slotIndex, draggingInstanceId);
         dragHandledExternally = true;
         return true;
     }

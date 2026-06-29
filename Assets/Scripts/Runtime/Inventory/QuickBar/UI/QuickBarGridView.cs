@@ -17,6 +17,7 @@ public class QuickBarGridView : MonoBehaviour
     private InventoryViewConfig viewConfig;
     private int selectedIndex;
     private bool initialized;
+    private IQuickBarReadOnly quickBarReadOnly;
     
     public bool Initialized => initialized;
 
@@ -28,10 +29,11 @@ public class QuickBarGridView : MonoBehaviour
 
     private void Initialize(QuickBarConfig dataConfig, InventoryViewConfig viewConfig)
     {
+        quickBarReadOnly = InventoryRuntimeSystem.QuickBarReadOnly;
         this.dataConfig = dataConfig;
         this.viewConfig = viewConfig;
         slots = new List<QuickBarSlotView>();
-        selectedIndex = InventoryRuntimeSystem.Current.GetQuickBarSelectedIndex();
+        selectedIndex = quickBarReadOnly.GetQuickBarSelectedIndex();
         CreateSlots();
         UpdateSlots();
         initialized = true;
@@ -50,7 +52,7 @@ public class QuickBarGridView : MonoBehaviour
 
     private void UpdateSlots()
     {
-        var instances = InventoryRuntimeSystem.Current.GetQuickBarItems();
+        var instances = quickBarReadOnly.GetQuickBarItems();
         for (int i = 0; i < slots.Count; i++)
         {
             if (instances[i] == null)
@@ -67,7 +69,7 @@ public class QuickBarGridView : MonoBehaviour
 
     public void UpdateSelection()
     {
-        int index = InventoryRuntimeSystem.Current.GetQuickBarSelectedIndex();
+        int index = quickBarReadOnly.GetQuickBarSelectedIndex();
         if (index != selectedIndex)
         {
             SelectSlot(index);

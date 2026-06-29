@@ -13,14 +13,23 @@ namespace JZQ.InventorySystem.Runtime.Core
 
         private void Awake()
         {
-            Manager = new InventoryManager(config.BackpackLayoutConfig, config.QuickBarConfig);
-            InventorySystem.Current = Manager;
+            SetInterfaces();
             GetComponent<SampleGUI>().Initialize(config.ItemDatabase);
         }
 
         private void OnDestroy()
         {
             InventorySystem.ClearCurrent(Manager);
+        }
+
+        private void SetInterfaces()
+        {
+            Manager = new InventoryManager(config.BackpackLayoutConfig, config.QuickBarConfig);
+            InventorySystem.SetCurrent(Manager);
+            InventorySystem.SetEvents(Manager);
+            InventorySystem.SetBackpackReadOnly(Manager);
+            InventorySystem.SetQuickBarReadOnly(Manager);
+            InventorySystem.SetBackpackViewRuntime(Manager);
         }
     }
 }

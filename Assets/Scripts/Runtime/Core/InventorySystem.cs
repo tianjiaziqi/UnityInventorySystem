@@ -4,15 +4,28 @@ namespace JZQ.InventorySystem.Runtime.Core
 {
     public static class InventorySystem
     {
-        public static InventoryManager Current { get; internal set; }
+        public static IInventoryRuntime Runtime { get; internal set; }
+        
+        public static IInventoryEventSource Events { get; internal set; }
+        
+        public static IBackpackReadOnly BackpackReadOnly { get; internal set; }
+        public static IQuickBarReadOnly QuickBarReadOnly { get; internal set; }
+        
+        public static IBackpackViewRuntime BackpackViewRuntime { get; internal set; }
 
-        public static void SetCurrent(InventoryManager manager) => Current = manager;
+        public static void SetCurrent(IInventoryRuntime runtime) => Runtime = runtime;
+        public static void SetEvents(IInventoryEventSource events) => Events = events;
+        
+        public static void SetBackpackReadOnly(IBackpackReadOnly backpackReadOnly) => BackpackReadOnly = backpackReadOnly;
+        public static void SetQuickBarReadOnly(IQuickBarReadOnly quickBarReadOnly) => QuickBarReadOnly = quickBarReadOnly;
+        
+        public static void SetBackpackViewRuntime(IBackpackViewRuntime backpackViewRuntime) => BackpackViewRuntime = backpackViewRuntime;
 
         public static void ClearCurrent(InventoryManager manager)
         {
-            if (Current == manager)
+            if (Runtime == manager)
             {
-                Current = null;
+                Runtime = null;
             }
         }
     }

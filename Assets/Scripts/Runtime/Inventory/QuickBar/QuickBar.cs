@@ -10,9 +10,11 @@ public class QuickBar
 {
     private QuickBarSlot[] slots;
     private int selectedIndex;
+    private IInventoryEventSource events;
 
-    public QuickBar(int slotCount)
+    public QuickBar(int slotCount, IInventoryEventSource events)
     {
+        this.events = events;
         slots = new QuickBarSlot[slotCount];
         for (int i = 0; i < slotCount; i++)
         {
@@ -23,14 +25,14 @@ public class QuickBar
     public void BindItem(int slotIndex, string instanceId)
     {
         slots[slotIndex].Bind(instanceId);
-        InventoryRuntimeSystem.Current.InvokeEvent(EInventoryEventType.QuickBarChanged);
+        events.InvokeEvent(EInventoryEventType.QuickBarChanged);
     }
 
     public void ClearSlot(int slotIndex)
     {
         if (slots[slotIndex].IsEmpty) return;
         slots[slotIndex].Clear();
-        InventoryRuntimeSystem.Current.InvokeEvent(EInventoryEventType.QuickBarChanged);
+        events.InvokeEvent(EInventoryEventType.QuickBarChanged);
     }
 
     public void SwapSlots(int a, int b)
@@ -40,7 +42,7 @@ public class QuickBar
         {
             slots[a].Bind(slots[b].GetItemInstanceId());
             slots[b].Clear();
-            InventoryRuntimeSystem.Current.InvokeEvent(EInventoryEventType.QuickBarChanged);
+            events.InvokeEvent(EInventoryEventType.QuickBarChanged);
             return;
         }
 
@@ -48,35 +50,35 @@ public class QuickBar
         {
             slots[b].Bind(slots[a].GetItemInstanceId());
             slots[a].Clear();
-            InventoryRuntimeSystem.Current.InvokeEvent(EInventoryEventType.QuickBarChanged);
+            events.InvokeEvent(EInventoryEventType.QuickBarChanged);
             return;
         }
         
         string temp = slots[a].GetItemInstanceId();
         slots[a].Bind(slots[b].GetItemInstanceId());
         slots[b].Bind(temp);
-        InventoryRuntimeSystem.Current.InvokeEvent(EInventoryEventType.QuickBarChanged);
+        events.InvokeEvent(EInventoryEventType.QuickBarChanged);
     }
 
     public void SetSelectedIndex(int index)
     {
         if (index < 0 || index >= slots.Length) return;
         selectedIndex = index;
-        InventoryRuntimeSystem.Current.InvokeEvent(EInventoryEventType.QuickBarSelectionChanged);
+        events.InvokeEvent(EInventoryEventType.QuickBarSelectionChanged);
     }
 
     public void SelectNext()
     {
         selectedIndex++;
         if(selectedIndex >= slots.Length) selectedIndex = 0;
-        InventoryRuntimeSystem.Current.InvokeEvent(EInventoryEventType.QuickBarSelectionChanged);
+        events.InvokeEvent(EInventoryEventType.QuickBarSelectionChanged);
     }
 
     public void SelectPrevious()
     {
         selectedIndex--;
         if (selectedIndex < 0) selectedIndex = slots.Length - 1;
-        InventoryRuntimeSystem.Current.InvokeEvent(EInventoryEventType.QuickBarSelectionChanged);
+        events.InvokeEvent(EInventoryEventType.QuickBarSelectionChanged);
     }
     public string GetSelectedItemId()
     {

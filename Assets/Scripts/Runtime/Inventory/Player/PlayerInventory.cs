@@ -21,13 +21,13 @@ namespace JZQ.InventorySystem.Runtime.Inventory.Player
 
         private float currentWeight;
 
-        public PlayerInventory(BackpackLayoutConfig backpackConfig, QuickBarConfig quickBarConfig)
+        public PlayerInventory(BackpackLayoutConfig backpackConfig, QuickBarConfig quickBarConfig, IInventoryEventSource events)
         {
             this.backpackConfig = backpackConfig;
             this.quickBarConfig = quickBarConfig;
             mainGrid = new InventoryGrid(backpackConfig.MaxSize.x, backpackConfig.MaxSize.y);
             maxWeight = backpackConfig.InitialWeight;
-            quickBar = new QuickBarModel(quickBarConfig.slotCount);
+            quickBar = new QuickBarModel(quickBarConfig.slotCount, events);
         }
 
         public int TryAddItem(ItemInstance item)
@@ -37,7 +37,7 @@ namespace JZQ.InventorySystem.Runtime.Inventory.Player
             if (initialCount != left)
             {
                 RecalculateCurrentWeight();
-                InventoryRuntimeSystem.Current.InvokeEvent(EInventoryEventType.InventoryChange);
+                InventoryRuntimeSystem.Events.InvokeEvent(EInventoryEventType.InventoryChange);
             }
 
             return left;
@@ -49,7 +49,7 @@ namespace JZQ.InventorySystem.Runtime.Inventory.Player
             {
                 RecalculateCurrentWeight();
                 UpdateQuickBar();
-                InventoryRuntimeSystem.Current.InvokeEvent(EInventoryEventType.InventoryChange);
+                InventoryRuntimeSystem.Events.InvokeEvent(EInventoryEventType.InventoryChange);
                 return true;
             }
 
@@ -60,7 +60,7 @@ namespace JZQ.InventorySystem.Runtime.Inventory.Player
         {
             if (mainGrid.TryMove(instanceId, x, y, rotated))
             {
-                InventoryRuntimeSystem.Current.InvokeEvent(EInventoryEventType.InventoryChange);
+                InventoryRuntimeSystem.Events.InvokeEvent(EInventoryEventType.InventoryChange);
                 return true;
             }
 
@@ -74,7 +74,7 @@ namespace JZQ.InventorySystem.Runtime.Inventory.Player
                 return false;
             }
             mainGrid.UnlockCell(x, y);
-            InventoryRuntimeSystem.Current.InvokeEvent(EInventoryEventType.InventoryUnlockChange);
+            InventoryRuntimeSystem.Events.InvokeEvent(EInventoryEventType.InventoryUnlockChange);
             return true;
         }
 
@@ -236,7 +236,7 @@ namespace JZQ.InventorySystem.Runtime.Inventory.Player
             }
 
             RecalculateCurrentWeight();
-            InventoryRuntimeSystem.Current.InvokeEvent(EInventoryEventType.InventoryChange);
+            InventoryRuntimeSystem.Events.InvokeEvent(EInventoryEventType.InventoryChange);
         }
     }
 }

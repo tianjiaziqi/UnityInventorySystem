@@ -39,7 +39,7 @@ public class SampleGUI : MonoBehaviour
     {
         if (!dataBase.TryGetItem(itemID, out ItemDefinition def)) return;
         ItemInstance itemIns = new ItemInstance(def, Guid.NewGuid().ToString(), count);
-        int left = InventorySystem.Current.TryAddItemToPlayer(itemIns);
+        int left = InventorySystem.Runtime.TryAddItemToPlayer(itemIns);
         
 
         if (left > 0)
