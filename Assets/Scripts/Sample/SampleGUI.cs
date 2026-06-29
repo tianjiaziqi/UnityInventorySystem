@@ -8,14 +8,9 @@ public class SampleGUI : MonoBehaviour
     private string itemId = "";
     private string count = "1";
     private bool isInitialized;
-    private ItemDatabase dataBase;
-
-    public void Initialize(ItemDatabase dataBase)
-    {
-        if (isInitialized) return;
-        this.dataBase = dataBase;
-        isInitialized = true;
-    }
+    [SerializeField]private ItemDatabase itemDataBase;
+    
+    
     private void OnGUI()
     {
         if(!isInitialized)
@@ -37,7 +32,7 @@ public class SampleGUI : MonoBehaviour
     
     private void AddItem(string itemID, int count = 1)
     {
-        if (!dataBase.TryGetItem(itemID, out ItemDefinition def)) return;
+        if (!itemDataBase.TryGetItem(itemID, out ItemDefinition def)) return;
         ItemInstance itemIns = new ItemInstance(def, Guid.NewGuid().ToString(), count);
         int left = InventorySystem.Runtime.TryAddItemToPlayer(itemIns);
         

@@ -10,16 +10,17 @@ namespace JZQ.InventorySystem.Runtime.Core
         public InventorySystemConfig Config => config;
 
         public InventoryManager Manager { get; private set; }
+        
+        
 
         private void Awake()
         {
             SetInterfaces();
-            GetComponent<SampleGUI>().Initialize(config.ItemDatabase);
         }
 
         private void OnDestroy()
         {
-            InventorySystem.ClearCurrent(Manager);
+            InventorySystem.ClearInterfaces(Manager);
         }
 
         private void SetInterfaces()
