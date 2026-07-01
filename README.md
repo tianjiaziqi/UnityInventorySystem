@@ -4,6 +4,32 @@ A modular Unity inventory system with a playable sample scene.
 
 Chinese Version: [README.zh-CN.md](README.zh-CN.md)
 
+## Demo
+
+### Backpack Basics
+
+Shows opening the backpack, adding items from the sample GUI, and the overall grid-based layout.
+
+![Backpack Basics](docs/demoGif1.gif)
+
+### Drag And Rotate
+
+Shows drag movement, placement preview, and item rotation during drag.
+
+![Drag And Rotate](docs/demoGif2.gif)
+
+### Split Merge Drop
+
+Shows right-drag split interaction, stack merging, and dropping items outside the backpack.
+
+![Split Merge Drop](docs/demoGif3.gif)
+
+### Quick Bar Flow
+
+Shows quick bar binding and slot switching flow.
+
+![Quick Bar Flow](docs/demoGif4.gif)
+
 ## Features
 
 - Grid-based backpack with multi-size item placement
@@ -40,7 +66,7 @@ Chinese Version: [README.zh-CN.md](README.zh-CN.md)
 
 - Backpack panel
 - Quick bar panel
-- Drag and drop item movement
+- Left-drag full stack movement
 - Placement preview
 - Item rotation during drag
 - Drag item to quick bar slot to bind
@@ -89,6 +115,13 @@ Sample item IDs:
 - Drag onto a compatible stack: merge items
 - Drag onto a quick bar slot: bind item to quick bar
 
+## Interaction Notes
+
+- Left drag moves a full stack.
+- Right drag starts a half-stack split preview.
+- Releasing outside the backpack drops the dragged amount.
+- Releasing over a compatible stack merges the dragged amount.
+
 ## Project Structure
 
 ```text
@@ -127,7 +160,7 @@ The UI layer is intentionally kept dependent on focused runtime interfaces inste
 
 ## UML Class Diagram
 
-![Inventory System UML](inventory-system-uml.svg)
+![Inventory System UML](docs/inventory-system-uml.svg)
 
 ## Roadmap
 
