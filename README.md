@@ -10,25 +10,25 @@ Chinese Version: [README.zh-CN.md](README.zh-CN.md)
 
 Shows opening the backpack, adding items from the sample GUI, and the overall grid-based layout.
 
-![Backpack Basics](docs/demoGif1.gif)
+![Backpack Basics](Docs/demoGif1.gif)
 
 ### Drag And Rotate
 
 Shows drag movement, placement preview, and item rotation during drag.
 
-![Drag And Rotate](docs/demoGif2.gif)
+![Drag And Rotate](Docs/demoGif2.gif)
 
 ### Split Merge Drop
 
 Shows right-drag split interaction, stack merging, and dropping items outside the backpack.
 
-![Split Merge Drop](docs/demoGif3.gif)
+![Split Merge Drop](Docs/demoGif3.gif)
 
 ### Quick Bar Flow
 
 Shows quick bar binding and slot switching flow.
 
-![Quick Bar Flow](docs/demoGif4.gif)
+![Quick Bar Flow](Docs/demoGif4.gif)
 
 ## Features
 
@@ -160,7 +160,7 @@ The UI layer is intentionally kept dependent on focused runtime interfaces inste
 
 ## UML Class Diagram
 
-![Inventory System UML](docs/inventory-system-uml.svg)
+![Inventory System UML](Docs/inventory-system-uml.svg)
 
 ## Roadmap
 
