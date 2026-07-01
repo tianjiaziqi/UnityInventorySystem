@@ -1,0 +1,421 @@
+<mxfile host="Electron">
+  <diagram name="Inventory System UML" id="0">
+    <mxGraphModel dx="4031" dy="545" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3400" pageHeight="2700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" parent="1" style="text;html=1;strokeColor=none;fillColor=none;fontSize=24;fontStyle=1;align=left;" value="Inventory System - UML Class Overview" vertex="1">
+          <mxGeometry height="40" width="600" x="40" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="legend" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" value="Legend: dashed hollow triangle = interface implementation | filled diamond = composition/ownership | open arrow = dependency/reference" vertex="1">
+          <mxGeometry height="50" width="760" x="530" y="15" as="geometry" />
+        </mxCell>
+        <mxCell id="n2" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;IInventoryRuntime&lt;/b&gt;&amp;#xa;&amp;#xa;+ TryAddItemToPlayer()&amp;#xa;+ TryRemoveItemFromPlayer()&amp;#xa;+ SetSelectedQuickSlot()&amp;#xa;&amp;#xa;+ GetSelectedQuickBarItem()" vertex="1">
+          <mxGeometry height="140" width="250" x="40" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="n3" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;IInventoryEventSource&lt;/b&gt;&amp;#xa;&amp;#xa;+ RegisterEvent()&amp;#xa;+ UnregisterEvent()&amp;#xa;+ InvokeEvent()&amp;#xa;" vertex="1">
+          <mxGeometry height="140" width="250" x="320" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="n4" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;IBackpackReadOnly&lt;/b&gt;&amp;#xa;&amp;#xa;+ GetPlayerPlacedItems()&amp;#xa;+ IsPlayerGridUnlocked()&amp;#xa;&amp;#xa;+ GetPlayerWeightRatio()" vertex="1">
+          <mxGeometry height="140" width="250" x="600" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="n5" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;IQuickBarReadOnly&lt;/b&gt;&amp;#xa;&amp;#xa;+ GetQuickBarSelectedIndex()&amp;#xa;+ GetQuickBarItems()&amp;#xa;&amp;#xa;+ GetSelectedQuickBarItem()" vertex="1">
+          <mxGeometry height="140" width="250" x="880" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="n6" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;IBackpackViewRuntime&lt;/b&gt;&amp;#xa;&amp;#xa;+ CanPlaceItemInPlayer()&amp;#xa;+ TryMoveItemFromPlayer()&amp;#xa;&amp;#xa;+ BindPlayerQuickSlot()" vertex="1">
+          <mxGeometry height="140" width="250" x="1160" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="n7" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;IBackpackCommandRuntime&lt;/b&gt;&amp;#xa;&amp;#xa;+ TryDropItem()&amp;#xa;+ TrySplitStack()&amp;#xa;&amp;#xa;+ TryMergeItems()" vertex="1">
+          <mxGeometry height="140" width="250" x="1440" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="n8" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;static facade&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventorySystem&lt;/b&gt;&amp;#xa;&amp;#xa;+ Runtime: IInventoryRuntime&amp;#xa;+ Events: IInventoryEventSource&amp;#xa;+ BackpackReadOnly: IBackpackReadOnly&amp;#xa;&amp;#xa;+ SetCurrent()&amp;#xa;+ ClearInterfaces()" vertex="1">
+          <mxGeometry height="170" width="260" x="180" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="n9" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;MonoBehaviour&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventorySystemBootstrap&lt;/b&gt;&amp;#xa;&amp;#xa;+ Config: InventorySystemConfig&amp;#xa;+ Manager: InventoryManager&amp;#xa;&amp;#xa;+ Awake()&amp;#xa;+ OnDestroy()&amp;#xa;+ SetInterfaces()" vertex="1">
+          <mxGeometry height="170" width="270" x="520" y="430" as="geometry" />
+        </mxCell>
+        <mxCell id="n10" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;facade / service&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventoryManager&lt;/b&gt;&amp;#xa;&amp;#xa;- playerInventory: PlayerInventory&amp;#xa;- eventCentre: InventoryEventCentre&amp;#xa;- backpackConfig: BackpackLayoutConfig&amp;#xa;- quickBarConfig: QuickBarConfig&amp;#xa;&amp;#xa;+ TryAddItemToPlayer()&amp;#xa;+ RegisterEvent()&amp;#xa;+ GetPlayerPlacedItems()&amp;#xa;+ TrySplitStack()" vertex="1">
+          <mxGeometry height="210" width="300" x="850" y="420" as="geometry" />
+        </mxCell>
+        <mxCell id="n11" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;event hub&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventoryEventCentre&lt;/b&gt;&amp;#xa;&amp;#xa;- events: Dictionary&amp;lt;EInventoryEventType, UnityAction&amp;gt;&amp;#xa;&amp;#xa;+ InvokeEvent()&amp;#xa;+ RegisterEvent()&amp;#xa;+ UnregisterEvent()&amp;#xa;+ ClearEvents()" vertex="1">
+          <mxGeometry height="160" width="300" x="1210" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="n12" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;enum&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;EInventoryEventType&lt;/b&gt;&amp;#xa;&amp;#xa;InventoryChanged&amp;#xa;InventoryWeightChanged&amp;#xa;QuickBarChanged&amp;#xa;QuickBarSelectionChanged&amp;#xa;" vertex="1">
+          <mxGeometry height="130" width="240" x="1560" y="450" as="geometry" />
+        </mxCell>
+        <mxCell id="n13" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;ScriptableObject&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventorySystemConfig&lt;/b&gt;&amp;#xa;&amp;#xa;+ BackpackLayoutConfig&amp;#xa;+ QuickBarConfig&amp;#xa;+ InventoryViewConfig&amp;#xa;+ ItemDatabase&amp;#xa;" vertex="1">
+          <mxGeometry height="145" width="280" x="70" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="n14" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;ScriptableObject&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;BackpackLayoutConfig&lt;/b&gt;&amp;#xa;&amp;#xa;+ MaxSize: Vector2Int&amp;#xa;+ InitialSize: Vector2Int&amp;#xa;+ MaxWeight: float&amp;#xa;+ CellSize: float&amp;#xa;" vertex="1">
+          <mxGeometry height="135" width="260" x="390" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="n15" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;ScriptableObject&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;QuickBarConfig&lt;/b&gt;&amp;#xa;&amp;#xa;+ slotCount: int&amp;#xa;" vertex="1">
+          <mxGeometry height="105" width="220" x="690" y="740" as="geometry" />
+        </mxCell>
+        <mxCell id="n16" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;ScriptableObject&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventoryViewConfig&lt;/b&gt;&amp;#xa;&amp;#xa;+ QuickBarDefaultIcon: Sprite&amp;#xa;+ BackpackUnlockedIcon: Sprite&amp;#xa;+ Preview sprites&amp;#xa;" vertex="1">
+          <mxGeometry height="135" width="270" x="950" y="730" as="geometry" />
+        </mxCell>
+        <mxCell id="n17" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;ScriptableObject&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;ItemDatabase&lt;/b&gt;&amp;#xa;&amp;#xa;+ Items: List&amp;lt;ItemDefinition&amp;gt;&amp;#xa;&amp;#xa;+ TryGetItem()" vertex="1">
+          <mxGeometry height="125" width="260" x="70" y="940" as="geometry" />
+        </mxCell>
+        <mxCell id="n18" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;ScriptableObject&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;ItemDefinition&lt;/b&gt;&amp;#xa;&amp;#xa;+ ItemID: string&amp;#xa;+ DisplayName: string&amp;#xa;+ Icon: Sprite&amp;#xa;+ Width/Height: int&amp;#xa;+ MaxStackCount: int&amp;#xa;" vertex="1">
+          <mxGeometry height="155" width="280" x="390" y="930" as="geometry" />
+        </mxCell>
+        <mxCell id="n19" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;runtime data&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;ItemInstance&lt;/b&gt;&amp;#xa;&amp;#xa;+ InstanceID: string&amp;#xa;+ Definition: ItemDefinition&amp;#xa;- stackCount: int&amp;#xa;+ Durability: int&amp;#xa;&amp;#xa;+ AddStack()&amp;#xa;+ RemoveStack()" vertex="1">
+          <mxGeometry height="155" width="260" x="720" y="930" as="geometry" />
+        </mxCell>
+        <mxCell id="n20" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;domain aggregate&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;PlayerInventory&lt;/b&gt;&amp;#xa;&amp;#xa;- mainGrid: InventoryGrid&amp;#xa;- quickBar: QuickBarModel&amp;#xa;- events: IInventoryEventSource&amp;#xa;- currentWeight: float&amp;#xa;&amp;#xa;+ TryAddItem()&amp;#xa;+ TryRemoveItem()&amp;#xa;+ TryMoveItem()&amp;#xa;+ TrySplitStack()" vertex="1">
+          <mxGeometry height="190" width="310" x="850" y="1130" as="geometry" />
+        </mxCell>
+        <mxCell id="n21" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;grid model&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventoryGrid&lt;/b&gt;&amp;#xa;&amp;#xa;- items: List&amp;lt;PlacedItem&amp;gt;&amp;#xa;- unlockedSlots: HashSet&amp;lt;Vector2Int&amp;gt;&amp;#xa;+ GridWidth: int&amp;#xa;+ GridHeight: int&amp;#xa;&amp;#xa;+ CanPlace()&amp;#xa;+ TryPlace()&amp;#xa;+ TryAdd()&amp;#xa;+ TryRemove()" vertex="1">
+          <mxGeometry height="185" width="300" x="1230" y="1140" as="geometry" />
+        </mxCell>
+        <mxCell id="n22" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;value object&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;PlacedItem&lt;/b&gt;&amp;#xa;&amp;#xa;+ InstanceItem: ItemInstance&amp;#xa;+ Position: Vector2Int&amp;#xa;+ Rotated: bool&amp;#xa;+ Width/Height: int&amp;#xa;" vertex="1">
+          <mxGeometry height="135" width="260" x="1260" y="1390" as="geometry" />
+        </mxCell>
+        <mxCell id="n23" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;model&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;QuickBarModel&lt;/b&gt;&amp;#xa;&amp;#xa;- slots: QuickBarSlot[]&amp;#xa;- events: IInventoryEventSource&amp;#xa;- selectedIndex: int&amp;#xa;&amp;#xa;+ BindItem()&amp;#xa;+ ClearSlot()&amp;#xa;+ SwapSlots()&amp;#xa;+ SelectNext()" vertex="1">
+          <mxGeometry height="175" width="280" x="1580" y="1140" as="geometry" />
+        </mxCell>
+        <mxCell id="n24" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;value object&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;QuickBarSlot&lt;/b&gt;&amp;#xa;&amp;#xa;- itemInstanceId: string&amp;#xa;+ IsEmpty: bool&amp;#xa;&amp;#xa;+ Bind()&amp;#xa;+ Clear()&amp;#xa;+ GetItemInstanceId()" vertex="1">
+          <mxGeometry height="160" width="240" x="1640" y="1390" as="geometry" />
+        </mxCell>
+        <mxCell id="n25" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;abstract MonoBehaviour&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventoryPanelBase&lt;/b&gt;&amp;#xa;&amp;#xa;- components: Dictionary&amp;lt;string, UIBehaviour&amp;gt;&amp;#xa;+ IsActive: bool&amp;#xa;&amp;#xa;# Awake()&amp;#xa;# FindChildrenObject()" vertex="1">
+          <mxGeometry height="145" width="300" x="70" y="1720" as="geometry" />
+        </mxCell>
+        <mxCell id="n26" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;MonoBehaviour&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;BackpackPanel&lt;/b&gt;&amp;#xa;&amp;#xa;- inventoryGridView: InventoryGridView&amp;#xa;- backpackSources: IBackpackReadOnly&amp;#xa;- events: IInventoryEventSource&amp;#xa;&amp;#xa;+ Initialize()&amp;#xa;+ OnInventoryChanged()&amp;#xa;+ RequestClose()" vertex="1">
+          <mxGeometry height="170" width="300" x="430" y="1710" as="geometry" />
+        </mxCell>
+        <mxCell id="n27" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;MonoBehaviour&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;QuickBarPanel&lt;/b&gt;&amp;#xa;&amp;#xa;- quickBarGridView: QuickBarGridView&amp;#xa;- events: IInventoryEventSource&amp;#xa;&amp;#xa;+ Initialize()&amp;#xa;+ OnQuickBarChange()" vertex="1">
+          <mxGeometry height="145" width="280" x="790" y="1720" as="geometry" />
+        </mxCell>
+        <mxCell id="n28" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;MonoBehaviour&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventoryGridView&lt;/b&gt;&amp;#xa;&amp;#xa;- slotCells: SlotCellView[,]&amp;#xa;- itemViews: Dictionary&amp;lt;string, InventoryItemView&amp;gt;&amp;#xa;- backpackView: IBackpackViewRuntime&amp;#xa;- backpackCommands: IBackpackCommandRuntime&amp;#xa;&amp;#xa;+ InitializeIfNeeded()&amp;#xa;+ RefreshAll()&amp;#xa;+ StartDrag()&amp;#xa;+ CompleteDrag()" vertex="1">
+          <mxGeometry height="205" width="340" x="430" y="1980" as="geometry" />
+        </mxCell>
+        <mxCell id="n29" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;MonoBehaviour + drag handlers&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventoryItemView&lt;/b&gt;&amp;#xa;&amp;#xa;- boundItem: PlacedItem&amp;#xa;- ownerGridView: InventoryGridView&amp;#xa;- rotated: bool&amp;#xa;&amp;#xa;+ Bind()&amp;#xa;+ OnBeginDrag()&amp;#xa;+ OnDrag()&amp;#xa;+ OnEndDrag()" vertex="1">
+          <mxGeometry height="175" width="300" x="830" y="1990" as="geometry" />
+        </mxCell>
+        <mxCell id="n30" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;MonoBehaviour&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;SlotCellView&lt;/b&gt;&amp;#xa;&amp;#xa;+ X: int&amp;#xa;+ Y: int&amp;#xa;- unlocked: bool&amp;#xa;&amp;#xa;+ Init()&amp;#xa;+ ShowPreview()&amp;#xa;+ ClearPreview()" vertex="1">
+          <mxGeometry height="145" width="250" x="1180" y="2000" as="geometry" />
+        </mxCell>
+        <mxCell id="n31" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;MonoBehaviour&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventoryDragGhostView&lt;/b&gt;&amp;#xa;&amp;#xa;- rectTransform&amp;#xa;- iconImage&amp;#xa;- canvasGroup&amp;#xa;&amp;#xa;+ SetIcon()&amp;#xa;+ SetSize()&amp;#xa;+ SetAlpha()" vertex="1">
+          <mxGeometry height="170" width="280" x="1480" y="2000" as="geometry" />
+        </mxCell>
+        <mxCell id="n32" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;MonoBehaviour&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;QuickBarGridView&lt;/b&gt;&amp;#xa;&amp;#xa;- slots: List&amp;lt;QuickBarSlotView&amp;gt;&amp;#xa;- quickBarReadOnly: IQuickBarReadOnly&amp;#xa;- dataConfig: QuickBarConfig&amp;#xa;&amp;#xa;+ InitializeIfNeed()&amp;#xa;+ UpdateSlots()&amp;#xa;+ SelectSlot()" vertex="1">
+          <mxGeometry height="165" width="310" x="790" y="2250" as="geometry" />
+        </mxCell>
+        <mxCell id="n33" parent="1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;spacing=6;" value="&amp;lt;&amp;lt;MonoBehaviour + IDropHandler&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;QuickBarSlotView&lt;/b&gt;&amp;#xa;&amp;#xa;- index: int&amp;#xa;- currentItemIcon: Sprite&amp;#xa;&amp;#xa;+ Init()&amp;#xa;+ SetSelection()&amp;#xa;+ SetItem()&amp;#xa;+ OnDrop()" vertex="1">
+          <mxGeometry height="160" width="290" x="1180" y="2260" as="geometry" />
+        </mxCell>
+        <mxCell id="e35" edge="1" parent="1" source="n10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=block;endFill=0;dashed=1;exitX=0.25;exitY=0;exitDx=0;exitDy=0;" value="implements">
+          <mxGeometry relative="1" x="0.0789" as="geometry">
+            <mxPoint x="1" as="offset" />
+            <Array as="points">
+              <mxPoint x="165" y="420" />
+            </Array>
+            <mxPoint x="1000" y="420" as="sourcePoint" />
+            <mxPoint x="165" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e36" edge="1" parent="1" source="n10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=block;endFill=0;dashed=1;" target="n3" value="implements">
+          <mxGeometry relative="1" x="0.1556" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="970" y="380" />
+              <mxPoint x="445" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e37" edge="1" parent="1" source="n10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=block;endFill=0;dashed=1;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" target="n4" value="implements">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="980" y="360" />
+              <mxPoint x="787" y="360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e38" edge="1" parent="1" source="n10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=block;endFill=0;dashed=1;" target="n5" value="implements">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1005" y="390" />
+              <mxPoint x="1005" y="390" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e39" edge="1" parent="1" source="n10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=block;endFill=0;dashed=1;" target="n6" value="implements">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1040" y="380" />
+              <mxPoint x="1285" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e40" edge="1" parent="1" source="n10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=block;endFill=0;dashed=1;" target="n7" value="implements">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1100" y="400" />
+              <mxPoint x="1510" y="400" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e41" edge="1" parent="1" source="n9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" target="n8" value="sets static&lt;div&gt;&amp;nbsp;interfaces&lt;/div&gt;">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e42" edge="1" parent="1" source="n26" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=block;endFill=0;" target="n25" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e43" edge="1" parent="1" source="n27" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=block;endFill=0;" target="n25" value="">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="930" y="1690" />
+              <mxPoint x="220" y="1690" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e44" edge="1" parent="1" source="n9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" target="n10" value="creates">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e45" edge="1" parent="1" source="n9" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;exitX=0.25;exitY=1;exitDx=0;exitDy=0;" target="n13" value="uses">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e46" edge="1" parent="1" source="n10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;exitX=0.75;exitY=1;exitDx=0;exitDy=0;" target="n20" value="owns">
+          <mxGeometry relative="1" x="0.1286" y="-5" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="1075" y="650" />
+              <mxPoint x="1280" y="650" />
+              <mxPoint x="1280" y="1080" />
+              <mxPoint x="1005" y="1080" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e47" edge="1" parent="1" source="n10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" target="n11" value="owns">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e48" edge="1" parent="1" source="n11" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" target="n12" value="keys">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e49" edge="1" parent="1" source="n10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" target="n14" value="uses">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1000" y="640" />
+              <mxPoint x="520" y="640" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e50" edge="1" parent="1" source="n10" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" target="n15" value="uses">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e51" edge="1" parent="1" source="n13" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" target="n14" value="contains">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e52" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" target="n15" value="contains">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="240" y="890" />
+              <mxPoint x="800" y="890" />
+            </Array>
+            <mxPoint x="240" y="870" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e53" edge="1" parent="1" source="n13" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" target="n16" value="contains">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="210" y="880" />
+              <mxPoint x="1085" y="880" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e54" edge="1" parent="1" source="n13" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" target="n17" value="contains">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e55" edge="1" parent="1" source="n17" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=0;endArrow=open;" target="n18" value="list">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e56" edge="1" parent="1" source="n19" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" target="n18" value="definition">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e57" edge="1" parent="1" source="n20" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" target="n21" value="owns">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e58" edge="1" parent="1" source="n20" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;exitX=0.75;exitY=0;exitDx=0;exitDy=0;" target="n23" value="owns">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1083" y="1090" />
+              <mxPoint x="1720" y="1090" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e59" edge="1" parent="1" source="n20" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" target="n3" value="publishes">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="-20" y="1225" />
+              <mxPoint x="-20" y="410" />
+              <mxPoint x="383" y="410" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e60" edge="1" parent="1" source="n21" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" target="n22" value="contains">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e61" edge="1" parent="1" source="n22" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" target="n19" value="wraps">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e62" edge="1" parent="1" source="n23" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" target="n24" value="contains">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e63" edge="1" parent="1" source="n23" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" value="publishes">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1720" y="1350" />
+              <mxPoint x="-60" y="1350" />
+              <mxPoint x="-60" y="390" />
+              <mxPoint x="360" y="390" />
+            </Array>
+            <mxPoint x="360" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e64" edge="1" parent="1" source="n21" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" target="n19" value="stores">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1380" y="1110" />
+              <mxPoint x="915" y="1110" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e65" edge="1" parent="1" source="n26" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" target="n28" value="contains">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e66" edge="1" parent="1" source="n26" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" target="n4" value="reads">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="580" y="1680" />
+              <mxPoint x="-170" y="1680" />
+              <mxPoint x="-170" y="100" />
+              <mxPoint x="725" y="100" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e67" edge="1" parent="1" source="n26" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" value="subscribes">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="580" y="1650" />
+              <mxPoint x="-100" y="1650" />
+              <mxPoint x="-100" y="370" />
+              <mxPoint x="340" y="370" />
+            </Array>
+            <mxPoint x="340" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e68" edge="1" parent="1" source="n27" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" target="n32" value="contains">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1160" y="1792.5" />
+              <mxPoint x="1160" y="2332.5" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e69" edge="1" parent="1" source="n27" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" target="n3" value="subscribes">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="930" y="1670" />
+              <mxPoint x="-140" y="1670" />
+              <mxPoint x="-140" y="340" />
+              <mxPoint x="320" y="340" />
+            </Array>
+            <mxPoint x="370" y="300" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e70" edge="1" parent="1" source="n28" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" target="n30" value="creates">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1305" y="1980" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e71" edge="1" parent="1" source="n28" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" target="n29" value="creates">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e72" edge="1" parent="1" source="n28" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" target="n31" value="creates">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="600" y="2200" />
+              <mxPoint x="1620" y="2200" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e73" edge="1" parent="1" source="n28" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" target="n6" value="uses">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="600" y="1940" />
+              <mxPoint x="1970" y="1940" />
+              <mxPoint x="1970" y="380" />
+              <mxPoint x="1285" y="380" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e74" edge="1" parent="1" source="n28" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;exitX=0.75;exitY=0;exitDx=0;exitDy=0;" target="n7" value="commands">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="685" y="1970" />
+              <mxPoint x="2000" y="1970" />
+              <mxPoint x="2000" y="230" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e75" edge="1" parent="1" source="n28" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" target="n22" value="renders">
+          <mxGeometry relative="1" x="0.0924" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="600" y="1910" />
+              <mxPoint x="1390" y="1910" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e76" edge="1" parent="1" source="n29" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" target="n22" value="binds">
+          <mxGeometry relative="1" x="0.4973" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="980" y="1950" />
+              <mxPoint x="1450" y="1950" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e77" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" value="owner">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="830" y="2110" as="sourcePoint" />
+            <mxPoint x="770" y="2115" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e78" edge="1" parent="1" source="n32" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" target="n33" value="creates">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e79" edge="1" parent="1" source="n32" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" target="n5" value="reads">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="-210" y="2333" />
+              <mxPoint x="-210" y="80" />
+              <mxPoint x="1005" y="80" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e80" edge="1" parent="1" source="n33" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" target="n28" value="drop source">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1325" y="2440" />
+              <mxPoint x="600" y="2440" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e81" edge="1" parent="1" source="n33" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" target="n19" value="renders">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1325" y="2470" />
+              <mxPoint x="780" y="2470" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

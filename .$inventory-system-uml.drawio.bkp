@@ -1,0 +1,257 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mxfile host="drawio" version="26.0.0">
+  <diagram name="Inventory System UML">
+    <mxGraphModel dx="1600" dy="1000" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="3400" pageHeight="2700" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="Inventory System - UML Class Overview" style="text;html=1;strokeColor=none;fillColor=none;fontSize=24;fontStyle=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="40" y="20" width="600" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="legend" value="Legend: dashed hollow triangle = interface implementation | filled diamond = composition/ownership | open arrow = dependency/reference" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="40" y="70" width="760" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="n2" value="&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;IInventoryRuntime&lt;/b&gt;&amp;#xa;&amp;#xa;+ TryAddItemToPlayer()&amp;#xa;+ TryRemoveItemFromPlayer()&amp;#xa;+ SetSelectedQuickSlot()&amp;#xa;&amp;#xa;+ GetSelectedQuickBarItem()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="40" y="160" width="250" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="n3" value="&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;IInventoryEventSource&lt;/b&gt;&amp;#xa;&amp;#xa;+ RegisterEvent()&amp;#xa;+ UnregisterEvent()&amp;#xa;+ InvokeEvent()&amp;#xa;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="320" y="160" width="250" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="n4" value="&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;IBackpackReadOnly&lt;/b&gt;&amp;#xa;&amp;#xa;+ GetPlayerPlacedItems()&amp;#xa;+ IsPlayerGridUnlocked()&amp;#xa;&amp;#xa;+ GetPlayerWeightRatio()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="600" y="160" width="250" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="n5" value="&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;IQuickBarReadOnly&lt;/b&gt;&amp;#xa;&amp;#xa;+ GetQuickBarSelectedIndex()&amp;#xa;+ GetQuickBarItems()&amp;#xa;&amp;#xa;+ GetSelectedQuickBarItem()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="880" y="160" width="250" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="n6" value="&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;IBackpackViewRuntime&lt;/b&gt;&amp;#xa;&amp;#xa;+ CanPlaceItemInPlayer()&amp;#xa;+ TryMoveItemFromPlayer()&amp;#xa;&amp;#xa;+ BindPlayerQuickSlot()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="1160" y="160" width="250" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="n7" value="&amp;lt;&amp;lt;interface&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;IBackpackCommandRuntime&lt;/b&gt;&amp;#xa;&amp;#xa;+ TryDropItem()&amp;#xa;+ TrySplitStack()&amp;#xa;&amp;#xa;+ TryMergeItems()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="1440" y="160" width="250" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="n8" value="&amp;lt;&amp;lt;static facade&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventorySystem&lt;/b&gt;&amp;#xa;&amp;#xa;+ Runtime: IInventoryRuntime&amp;#xa;+ Events: IInventoryEventSource&amp;#xa;+ BackpackReadOnly: IBackpackReadOnly&amp;#xa;&amp;#xa;+ SetCurrent()&amp;#xa;+ ClearInterfaces()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="210" y="430" width="260" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="n9" value="&amp;lt;&amp;lt;MonoBehaviour&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventorySystemBootstrap&lt;/b&gt;&amp;#xa;&amp;#xa;+ Config: InventorySystemConfig&amp;#xa;+ Manager: InventoryManager&amp;#xa;&amp;#xa;+ Awake()&amp;#xa;+ OnDestroy()&amp;#xa;+ SetInterfaces()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="520" y="430" width="270" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="n10" value="&amp;lt;&amp;lt;facade / service&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventoryManager&lt;/b&gt;&amp;#xa;&amp;#xa;- playerInventory: PlayerInventory&amp;#xa;- eventCentre: InventoryEventCentre&amp;#xa;- backpackConfig: BackpackLayoutConfig&amp;#xa;- quickBarConfig: QuickBarConfig&amp;#xa;&amp;#xa;+ TryAddItemToPlayer()&amp;#xa;+ RegisterEvent()&amp;#xa;+ GetPlayerPlacedItems()&amp;#xa;+ TrySplitStack()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="850" y="420" width="300" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="n11" value="&amp;lt;&amp;lt;event hub&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventoryEventCentre&lt;/b&gt;&amp;#xa;&amp;#xa;- events: Dictionary&amp;lt;EInventoryEventType, UnityAction&amp;gt;&amp;#xa;&amp;#xa;+ InvokeEvent()&amp;#xa;+ RegisterEvent()&amp;#xa;+ UnregisterEvent()&amp;#xa;+ ClearEvents()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="1210" y="440" width="300" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="n12" value="&amp;lt;&amp;lt;enum&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;EInventoryEventType&lt;/b&gt;&amp;#xa;&amp;#xa;InventoryChanged&amp;#xa;InventoryWeightChanged&amp;#xa;QuickBarChanged&amp;#xa;QuickBarSelectionChanged&amp;#xa;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="1560" y="450" width="240" height="130" as="geometry" />
+        </mxCell>
+        <mxCell id="n13" value="&amp;lt;&amp;lt;ScriptableObject&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventorySystemConfig&lt;/b&gt;&amp;#xa;&amp;#xa;+ BackpackLayoutConfig&amp;#xa;+ QuickBarConfig&amp;#xa;+ InventoryViewConfig&amp;#xa;+ ItemDatabase&amp;#xa;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="70" y="720" width="280" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="n14" value="&amp;lt;&amp;lt;ScriptableObject&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;BackpackLayoutConfig&lt;/b&gt;&amp;#xa;&amp;#xa;+ MaxSize: Vector2Int&amp;#xa;+ InitialSize: Vector2Int&amp;#xa;+ MaxWeight: float&amp;#xa;+ CellSize: float&amp;#xa;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="390" y="730" width="260" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="n15" value="&amp;lt;&amp;lt;ScriptableObject&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;QuickBarConfig&lt;/b&gt;&amp;#xa;&amp;#xa;+ slotCount: int&amp;#xa;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="690" y="740" width="220" height="105" as="geometry" />
+        </mxCell>
+        <mxCell id="n16" value="&amp;lt;&amp;lt;ScriptableObject&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventoryViewConfig&lt;/b&gt;&amp;#xa;&amp;#xa;+ QuickBarDefaultIcon: Sprite&amp;#xa;+ BackpackUnlockedIcon: Sprite&amp;#xa;+ Preview sprites&amp;#xa;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="950" y="730" width="270" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="n17" value="&amp;lt;&amp;lt;ScriptableObject&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;ItemDatabase&lt;/b&gt;&amp;#xa;&amp;#xa;+ Items: List&amp;lt;ItemDefinition&amp;gt;&amp;#xa;&amp;#xa;+ TryGetItem()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="70" y="940" width="260" height="125" as="geometry" />
+        </mxCell>
+        <mxCell id="n18" value="&amp;lt;&amp;lt;ScriptableObject&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;ItemDefinition&lt;/b&gt;&amp;#xa;&amp;#xa;+ ItemID: string&amp;#xa;+ DisplayName: string&amp;#xa;+ Icon: Sprite&amp;#xa;+ Width/Height: int&amp;#xa;+ MaxStackCount: int&amp;#xa;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="390" y="930" width="280" height="155" as="geometry" />
+        </mxCell>
+        <mxCell id="n19" value="&amp;lt;&amp;lt;runtime data&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;ItemInstance&lt;/b&gt;&amp;#xa;&amp;#xa;+ InstanceID: string&amp;#xa;+ Definition: ItemDefinition&amp;#xa;- stackCount: int&amp;#xa;+ Durability: int&amp;#xa;&amp;#xa;+ AddStack()&amp;#xa;+ RemoveStack()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="720" y="930" width="260" height="155" as="geometry" />
+        </mxCell>
+        <mxCell id="n20" value="&amp;lt;&amp;lt;domain aggregate&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;PlayerInventory&lt;/b&gt;&amp;#xa;&amp;#xa;- mainGrid: InventoryGrid&amp;#xa;- quickBar: QuickBarModel&amp;#xa;- events: IInventoryEventSource&amp;#xa;- currentWeight: float&amp;#xa;&amp;#xa;+ TryAddItem()&amp;#xa;+ TryRemoveItem()&amp;#xa;+ TryMoveItem()&amp;#xa;+ TrySplitStack()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="850" y="1130" width="310" height="190" as="geometry" />
+        </mxCell>
+        <mxCell id="n21" value="&amp;lt;&amp;lt;grid model&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventoryGrid&lt;/b&gt;&amp;#xa;&amp;#xa;- items: List&amp;lt;PlacedItem&amp;gt;&amp;#xa;- unlockedSlots: HashSet&amp;lt;Vector2Int&amp;gt;&amp;#xa;+ GridWidth: int&amp;#xa;+ GridHeight: int&amp;#xa;&amp;#xa;+ CanPlace()&amp;#xa;+ TryPlace()&amp;#xa;+ TryAdd()&amp;#xa;+ TryRemove()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="1230" y="1140" width="300" height="185" as="geometry" />
+        </mxCell>
+        <mxCell id="n22" value="&amp;lt;&amp;lt;value object&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;PlacedItem&lt;/b&gt;&amp;#xa;&amp;#xa;+ InstanceItem: ItemInstance&amp;#xa;+ Position: Vector2Int&amp;#xa;+ Rotated: bool&amp;#xa;+ Width/Height: int&amp;#xa;" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="1260" y="1390" width="260" height="135" as="geometry" />
+        </mxCell>
+        <mxCell id="n23" value="&amp;lt;&amp;lt;model&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;QuickBarModel&lt;/b&gt;&amp;#xa;&amp;#xa;- slots: QuickBarSlot[]&amp;#xa;- events: IInventoryEventSource&amp;#xa;- selectedIndex: int&amp;#xa;&amp;#xa;+ BindItem()&amp;#xa;+ ClearSlot()&amp;#xa;+ SwapSlots()&amp;#xa;+ SelectNext()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="1580" y="1140" width="280" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="n24" value="&amp;lt;&amp;lt;value object&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;QuickBarSlot&lt;/b&gt;&amp;#xa;&amp;#xa;- itemInstanceId: string&amp;#xa;+ IsEmpty: bool&amp;#xa;&amp;#xa;+ Bind()&amp;#xa;+ Clear()&amp;#xa;+ GetItemInstanceId()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="1640" y="1390" width="240" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="n25" value="&amp;lt;&amp;lt;abstract MonoBehaviour&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventoryPanelBase&lt;/b&gt;&amp;#xa;&amp;#xa;- components: Dictionary&amp;lt;string, UIBehaviour&amp;gt;&amp;#xa;+ IsActive: bool&amp;#xa;&amp;#xa;# Awake()&amp;#xa;# FindChildrenObject()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="70" y="1720" width="300" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="n26" value="&amp;lt;&amp;lt;MonoBehaviour&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;BackpackPanel&lt;/b&gt;&amp;#xa;&amp;#xa;- inventoryGridView: InventoryGridView&amp;#xa;- backpackSources: IBackpackReadOnly&amp;#xa;- events: IInventoryEventSource&amp;#xa;&amp;#xa;+ Initialize()&amp;#xa;+ OnInventoryChanged()&amp;#xa;+ RequestClose()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="430" y="1710" width="300" height="170" as="geometry" />
+        </mxCell>
+        <mxCell id="n27" value="&amp;lt;&amp;lt;MonoBehaviour&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;QuickBarPanel&lt;/b&gt;&amp;#xa;&amp;#xa;- quickBarGridView: QuickBarGridView&amp;#xa;- events: IInventoryEventSource&amp;#xa;&amp;#xa;+ Initialize()&amp;#xa;+ OnQuickBarChange()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="790" y="1720" width="280" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="n28" value="&amp;lt;&amp;lt;MonoBehaviour&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventoryGridView&lt;/b&gt;&amp;#xa;&amp;#xa;- slotCells: SlotCellView[,]&amp;#xa;- itemViews: Dictionary&amp;lt;string, InventoryItemView&amp;gt;&amp;#xa;- backpackView: IBackpackViewRuntime&amp;#xa;- backpackCommands: IBackpackCommandRuntime&amp;#xa;&amp;#xa;+ InitializeIfNeeded()&amp;#xa;+ RefreshAll()&amp;#xa;+ StartDrag()&amp;#xa;+ CompleteDrag()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="430" y="1980" width="340" height="205" as="geometry" />
+        </mxCell>
+        <mxCell id="n29" value="&amp;lt;&amp;lt;MonoBehaviour + drag handlers&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventoryItemView&lt;/b&gt;&amp;#xa;&amp;#xa;- boundItem: PlacedItem&amp;#xa;- ownerGridView: InventoryGridView&amp;#xa;- rotated: bool&amp;#xa;&amp;#xa;+ Bind()&amp;#xa;+ OnBeginDrag()&amp;#xa;+ OnDrag()&amp;#xa;+ OnEndDrag()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="830" y="1990" width="300" height="175" as="geometry" />
+        </mxCell>
+        <mxCell id="n30" value="&amp;lt;&amp;lt;MonoBehaviour&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;SlotCellView&lt;/b&gt;&amp;#xa;&amp;#xa;+ X: int&amp;#xa;+ Y: int&amp;#xa;- unlocked: bool&amp;#xa;&amp;#xa;+ Init()&amp;#xa;+ ShowPreview()&amp;#xa;+ ClearPreview()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="2000" width="250" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="n31" value="&amp;lt;&amp;lt;MonoBehaviour&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;InventoryDragGhostView&lt;/b&gt;&amp;#xa;&amp;#xa;- rectTransform&amp;#xa;- iconImage&amp;#xa;- canvasGroup&amp;#xa;&amp;#xa;+ SetIcon()&amp;#xa;+ SetSize()&amp;#xa;+ SetAlpha()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="1480" y="2000" width="280" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="n32" value="&amp;lt;&amp;lt;MonoBehaviour&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;QuickBarGridView&lt;/b&gt;&amp;#xa;&amp;#xa;- slots: List&amp;lt;QuickBarSlotView&amp;gt;&amp;#xa;- quickBarReadOnly: IQuickBarReadOnly&amp;#xa;- dataConfig: QuickBarConfig&amp;#xa;&amp;#xa;+ InitializeIfNeed()&amp;#xa;+ UpdateSlots()&amp;#xa;+ SelectSlot()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="790" y="2250" width="310" height="165" as="geometry" />
+        </mxCell>
+        <mxCell id="n33" value="&amp;lt;&amp;lt;MonoBehaviour + IDropHandler&amp;gt;&amp;gt;&amp;#xa;&lt;b&gt;QuickBarSlotView&lt;/b&gt;&amp;#xa;&amp;#xa;- index: int&amp;#xa;- currentItemIcon: Sprite&amp;#xa;&amp;#xa;+ Init()&amp;#xa;+ SetSelection()&amp;#xa;+ SetItem()&amp;#xa;+ OnDrop()" style="swimlane;fontStyle=1;align=center;verticalAlign=top;startSize=26;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;spacing=6;" vertex="1" parent="1">
+          <mxGeometry x="1180" y="2260" width="290" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="n34" value="Scope note&amp;#xa;Runtime source only. Auto-generated SampleInventoryInputAction and Unity Library artifacts are excluded for readability." style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="1860" y="150" width="360" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="e35" value="implements" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=block;endFill=0;dashed=1;" edge="1" parent="1" source="n10" target="n2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e36" value="implements" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=block;endFill=0;dashed=1;" edge="1" parent="1" source="n10" target="n3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e37" value="implements" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=block;endFill=0;dashed=1;" edge="1" parent="1" source="n10" target="n4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e38" value="implements" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=block;endFill=0;dashed=1;" edge="1" parent="1" source="n10" target="n5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e39" value="implements" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=block;endFill=0;dashed=1;" edge="1" parent="1" source="n10" target="n6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e40" value="implements" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=block;endFill=0;dashed=1;" edge="1" parent="1" source="n10" target="n7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e41" value="sets static interfaces" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" edge="1" parent="1" source="n9" target="n8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e42" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=block;endFill=0;" edge="1" parent="1" source="n26" target="n25">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e43" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=block;endFill=0;" edge="1" parent="1" source="n27" target="n25">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e44" value="creates" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" edge="1" parent="1" source="n9" target="n10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e45" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" edge="1" parent="1" source="n9" target="n13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e46" value="owns" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" edge="1" parent="1" source="n10" target="n20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e47" value="owns" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" edge="1" parent="1" source="n10" target="n11">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e48" value="keys" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" edge="1" parent="1" source="n11" target="n12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e49" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" edge="1" parent="1" source="n10" target="n14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e50" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" edge="1" parent="1" source="n10" target="n15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e51" value="contains" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" edge="1" parent="1" source="n13" target="n14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e52" value="contains" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" edge="1" parent="1" source="n13" target="n15">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e53" value="contains" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" edge="1" parent="1" source="n13" target="n16">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e54" value="contains" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" edge="1" parent="1" source="n13" target="n17">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e55" value="list" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=0;endArrow=open;" edge="1" parent="1" source="n17" target="n18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e56" value="definition" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" edge="1" parent="1" source="n19" target="n18">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e57" value="owns" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" edge="1" parent="1" source="n20" target="n21">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e58" value="owns" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" edge="1" parent="1" source="n20" target="n23">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e59" value="publishes" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" edge="1" parent="1" source="n20" target="n3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e60" value="contains" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" edge="1" parent="1" source="n21" target="n22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e61" value="wraps" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" edge="1" parent="1" source="n22" target="n19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e62" value="contains" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" edge="1" parent="1" source="n23" target="n24">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e63" value="publishes" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" edge="1" parent="1" source="n23" target="n3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e64" value="stores" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" edge="1" parent="1" source="n21" target="n19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e65" value="contains" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" edge="1" parent="1" source="n26" target="n28">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e66" value="reads" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" edge="1" parent="1" source="n26" target="n4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e67" value="subscribes" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" edge="1" parent="1" source="n26" target="n3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e68" value="contains" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" edge="1" parent="1" source="n27" target="n32">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e69" value="subscribes" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" edge="1" parent="1" source="n27" target="n3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e70" value="creates" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" edge="1" parent="1" source="n28" target="n30">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e71" value="creates" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" edge="1" parent="1" source="n28" target="n29">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e72" value="creates" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" edge="1" parent="1" source="n28" target="n31">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e73" value="uses" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" edge="1" parent="1" source="n28" target="n6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e74" value="commands" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" edge="1" parent="1" source="n28" target="n7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e75" value="renders" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" edge="1" parent="1" source="n28" target="n22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e76" value="binds" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" edge="1" parent="1" source="n29" target="n22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e77" value="owner" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" edge="1" parent="1" source="n29" target="n28">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e78" value="creates" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;startArrow=diamondThin;startFill=1;endArrow=open;" edge="1" parent="1" source="n32" target="n33">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e79" value="reads" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" edge="1" parent="1" source="n32" target="n5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e80" value="drop source" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" edge="1" parent="1" source="n33" target="n28">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e81" value="renders" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=#ffffff;fontSize=11;endArrow=open;" edge="1" parent="1" source="n33" target="n19">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

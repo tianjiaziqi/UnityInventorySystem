@@ -1,8 +1,8 @@
 # Unity Inventory System
 
-A Unity inventory system project.
+A modular Unity inventory system with a playable sample scene.
 
-Chinese Version: [README.zh-CN.md](README.zh-CN.md)。
+Chinese Version: [README.zh-CN.md](README.zh-CN.md)
 
 ## Features
 
@@ -14,15 +14,27 @@ Chinese Version: [README.zh-CN.md](README.zh-CN.md)。
 - Mouse wheel quick bar switching
 - Basic weight calculation with UI feedback
 - Data-driven setup through `ScriptableObject`
+- Runtime access split into focused interfaces for UI and external systems
+- Sample scene wired with Unity Input System
 
 ## What's Implemented
 
 ### Runtime
 
-- `InventoryGrid` handles placement checks, overlap detection, auto placement, moving, and stacking
+- `InventoryGrid` handles placement checks, overlap detection, auto placement, moving, stacking, merging, and splitting
 - `PlayerInventory` wraps backpack data, quick bar state, weight, and player-facing operations
-- `InventoryManager` acts as the main runtime entry point for other systems and UI
+- `InventoryManager` acts as the default runtime facade and exposes multiple focused interfaces
 - `InventoryEventCentre` handles inventory and quick bar related events
+- `InventorySystemBootstrap` creates the runtime manager and registers static service entry points
+
+### Runtime Interfaces
+
+- `IInventoryRuntime` for general inventory access
+- `IInventoryEventSource` for event registration and dispatch
+- `IBackpackReadOnly` for read-only backpack state
+- `IQuickBarReadOnly` for read-only quick bar state
+- `IBackpackViewRuntime` for backpack UI placement and binding logic
+- `IBackpackCommandRuntime` for advanced commands such as drop, split, and merge
 
 ### UI
 
@@ -32,10 +44,15 @@ Chinese Version: [README.zh-CN.md](README.zh-CN.md)。
 - Placement preview
 - Item rotation during drag
 - Drag item to quick bar slot to bind
+- Drag item outside the backpack to drop it
+- Drag onto a compatible stack to merge
+- Right-drag half a stack as a split interaction
 
 ### Sample
 
-- Demo scene: `Assets/Scenes/SampleScene`
+- Demo scene: `Assets/Scenes/SampleScene.unity`
+- Sample input wrapper: `Assets/Scripts/Sample/SampleInventoryInput.cs`
+- Input action asset: `Assets/SampleInventoryInputAction.inputactions`
 - A simple debug GUI is available in the top-left corner for adding items by ID and count
 
 Sample item IDs:
@@ -55,10 +72,10 @@ Sample item IDs:
 
 ### Run the Sample
 
-1. Open the project in Unity
-2. Open `Assets/Scenes/SampleScene`
-3. Enter Play Mode
-4. Use the debug GUI in the top-left corner to add items by ID and count
+1. Open the project in Unity.
+2. Open `Assets/Scenes/SampleScene.unity`.
+3. Enter Play Mode.
+4. Use the debug GUI in the top-left corner to add items by ID and count.
 
 ### Default Controls
 
@@ -66,49 +83,55 @@ Sample item IDs:
 - `R`: rotate current dragged item
 - `1` to `0`: select quick bar slot
 - Mouse wheel: switch quick bar selection
-- Mouse drag: move item / bind item to quick bar
+- Left drag: move a full stack
+- Right drag: drag half of a stack
+- Drag outside the backpack: drop items
+- Drag onto a compatible stack: merge items
+- Drag onto a quick bar slot: bind item to quick bar
 
 ## Project Structure
 
 ```text
 Assets
+├── ArtRes                   # Item and UI art resources
 ├── Configs                  # Item, backpack, quick bar, and view configs
-├── Prefabs/UI               # UI prefabs for backpack and quick bar
+├── Prefabs/UI               # Backpack and quick bar prefabs
 ├── Scenes                   # Sample scene
+├── SampleInventoryInputAction.inputactions
 └── Scripts
     ├── Runtime
-    │   ├── Core             # System entry, events, shared config
+    │   ├── Core             # System entry, bootstrap, events, interfaces, shared configs
     │   ├── Data             # ItemDefinition / ItemDatabase / ItemInstance
     │   ├── Inventory
     │   │   ├── Backpack     # Backpack data and backpack UI
-    │   │   ├── Common       # Shared grid and manager logic
+    │   │   ├── Internal     # Internal grid and manager implementation
     │   │   ├── Player       # Player inventory wrapper
     │   │   └── QuickBar     # Quick bar data and UI
     │   └── UI               # Shared panel base
-    └── Sample               # Demo input and sample controller scripts
+    └── Sample               # Sample input and scene controller scripts
 ```
 
 ## Design Notes
 
-The current structure follows a fairly straightforward split:
+The current structure is centered around a small runtime core plus feature-specific layers:
 
 - `ItemDefinition` stores static item data
 - `ItemInstance` represents a runtime item instance
-- `PlacedItem` stores item position, size, and rotation state inside the grid
-- `InventoryGrid` owns the core placement rules
-- `PlayerInventory` and `InventoryManager` expose a cleaner API to the UI layer
+- `PlacedItem` stores item position, size, and rotation inside the grid
+- `InventoryGrid` owns placement rules and low-level grid operations
+- `PlayerInventory` encapsulates player-facing inventory behavior
+- `InventoryManager` exposes a cleaner facade for UI and external systems
+- `InventorySystemBootstrap` wires everything together for scene usage
 
-Right now the focus is on getting the full feature loop working first. The next step is to keep tightening the boundaries and make it easier to extend.
+The UI layer is intentionally kept dependent on focused runtime interfaces instead of directly depending on all runtime implementation details.
 
 ## UML Class Diagram
 
-Plan to add it later once the current structure settles a bit more.
+![Inventory System UML](inventory-system-uml.svg)
 
 ## Roadmap
 
-- Abstracting some essential functions under `InventoryManager` to a Interface
-- Implement a class for item instance generation.
-- Drop, merge, split operations.
-- Saving 
+- Item instance factory or spawn service
+- Save / load support
 - More specific event types
-
+- Additional gameplay-facing item actions built on top of the current runtime API
