@@ -7,14 +7,11 @@ public class SampleGUI : MonoBehaviour
 {
     private string itemId = "";
     private string count = "1";
-    private bool isInitialized;
     [SerializeField]private ItemDatabase itemDataBase;
     
     
     private void OnGUI()
     {
-        if(!isInitialized)
-            return;
         itemId = GUI.TextField(new Rect(10, 10, 100, 20), itemId);
         count = GUI.TextField(new Rect(10, 40, 100, 20), count);
         if (GUI.Button(new Rect(120, 10, 100, 20), "Add"))

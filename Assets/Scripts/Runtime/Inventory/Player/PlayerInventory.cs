@@ -5,7 +5,6 @@ using JZQ.InventorySystem.Runtime.Inventory.Backpack;
 using JZQ.InventorySystem.Runtime.Inventory.Common;
 using JZQ.InventorySystem.Runtime.Inventory.QuickBar;
 using UnityEngine;
-using InventoryRuntimeSystem = JZQ.InventorySystem.Runtime.Core.InventorySystem;
 using QuickBarModel = JZQ.InventorySystem.Runtime.Inventory.QuickBar.QuickBar;
 
 namespace JZQ.InventorySystem.Runtime.Inventory.Player
@@ -20,6 +19,8 @@ namespace JZQ.InventorySystem.Runtime.Inventory.Player
         private QuickBarConfig quickBarConfig;
 
         private float currentWeight;
+        
+        private IInventoryEventSource events;
 
         public PlayerInventory(BackpackLayoutConfig backpackConfig, QuickBarConfig quickBarConfig, IInventoryEventSource events)
         {
@@ -27,6 +28,7 @@ namespace JZQ.InventorySystem.Runtime.Inventory.Player
             this.quickBarConfig = quickBarConfig;
             mainGrid = new InventoryGrid(backpackConfig.MaxSize.x, backpackConfig.MaxSize.y);
             maxWeight = backpackConfig.InitialWeight;
+            this.events = events;
             quickBar = new QuickBarModel(quickBarConfig.slotCount, events);
         }
 
@@ -37,7 +39,7 @@ namespace JZQ.InventorySystem.Runtime.Inventory.Player
             if (initialCount != left)
             {
                 RecalculateCurrentWeight();
-                InventoryRuntimeSystem.Events.InvokeEvent(EInventoryEventType.InventoryChange);
+                events.InvokeEvent(EInventoryEventType.InventoryChange);
             }
 
             return left;
@@ -49,7 +51,7 @@ namespace JZQ.InventorySystem.Runtime.Inventory.Player
             {
                 RecalculateCurrentWeight();
                 UpdateQuickBar();
-                InventoryRuntimeSystem.Events.InvokeEvent(EInventoryEventType.InventoryChange);
+                events.InvokeEvent(EInventoryEventType.InventoryChange);
                 return true;
             }
 
@@ -60,7 +62,7 @@ namespace JZQ.InventorySystem.Runtime.Inventory.Player
         {
             if (mainGrid.TryMove(instanceId, x, y, rotated))
             {
-                InventoryRuntimeSystem.Events.InvokeEvent(EInventoryEventType.InventoryChange);
+                events.InvokeEvent(EInventoryEventType.InventoryChange);
                 return true;
             }
 
@@ -74,7 +76,7 @@ namespace JZQ.InventorySystem.Runtime.Inventory.Player
                 return false;
             }
             mainGrid.UnlockCell(x, y);
-            InventoryRuntimeSystem.Events.InvokeEvent(EInventoryEventType.InventoryUnlockChange);
+            events.InvokeEvent(EInventoryEventType.InventoryUnlockChange);
             return true;
         }
 
@@ -239,8 +241,97 @@ namespace JZQ.InventorySystem.Runtime.Inventory.Player
             }
 
             RecalculateCurrentWeight();
-            InventoryRuntimeSystem.Events.InvokeEvent(EInventoryEventType.QuickBarChanged);
-            InventoryRuntimeSystem.Events.InvokeEvent(EInventoryEventType.InventoryChange);
+            events.InvokeEvent(EInventoryEventType.QuickBarChanged);
+            events.InvokeEvent(EInventoryEventType.InventoryChange);
+        }
+
+        public bool TryDropItem(string instanceId, int count, out ItemInstance droppedItem)
+        {
+            droppedItem = null;
+            if (count <= 0) return false;
+            var item = mainGrid.GetItemInstance(instanceId);
+            if(item == null || item.StackCount < count) return false;
+            if(!mainGrid.TrySplitStack(instanceId, count, out var instance)) return false;
+            droppedItem = instance;
+            UpdateQuickBar();
+            RecalculateCurrentWeight();
+            events.InvokeEvent(EInventoryEventType.InventoryChange);
+            events.InvokeEvent(EInventoryEventType.QuickBarChanged);
+            
+            return true;
+        }
+
+        public bool TrySplitStack(string instanceId, int splitCount, out ItemInstance newStack)
+        {
+            if(!mainGrid.TrySplitStack(instanceId, splitCount, out newStack)) return false;
+            UpdateQuickBar();
+            events.InvokeEvent(EInventoryEventType.InventoryChange);
+            events.InvokeEvent(EInventoryEventType.QuickBarChanged);
+            return true;
+        }
+
+        public bool TrySplitPlaceItem(string sourceInstanceId, int splitCount, int x, int y, bool rotated)
+        {
+            if (splitCount <= 0) return false;
+
+            var source = mainGrid.GetItemInstance(sourceInstanceId);
+            if (source == null || source.StackCount <= splitCount) return false;
+
+            var splitItem = new ItemInstance(source.Definition, System.Guid.NewGuid().ToString(), splitCount);
+            if (!mainGrid.CanPlace(splitItem, x, y, rotated)) return false;
+
+            source.StackCount -= splitCount;
+            if (!mainGrid.TryPlace(splitItem, x, y, rotated))
+            {
+                source.StackCount += splitCount;
+                return false;
+            }
+
+            events.InvokeEvent(EInventoryEventType.InventoryChange);
+            events.InvokeEvent(EInventoryEventType.QuickBarChanged);
+            return true;
+        }
+        
+        public bool TryMergeStack(string sourceId, string targetId)
+        {
+            if (!mainGrid.TryMergeStack(sourceId, targetId)) return false;
+            UpdateQuickBar();
+            events.InvokeEvent(EInventoryEventType.InventoryChange);
+            events.InvokeEvent(EInventoryEventType.QuickBarChanged);
+            return true;
+        }
+
+        public bool TryMergeSplitItems(string sourceInstanceId, int splitCount, string targetInstanceId)
+        {
+            if (splitCount <= 0) return false;
+
+            var source = mainGrid.GetItemInstance(sourceInstanceId);
+            var target = mainGrid.GetItemInstance(targetInstanceId);
+            if (source == null || target == null) return false;
+            if (source.InstanceID == target.InstanceID) return false;
+            if (source.Definition != target.Definition) return false;
+            if (source.StackCount <= splitCount) return false;
+            if (target.StackCount + splitCount > target.Definition.MaxStack) return false;
+
+            source.StackCount -= splitCount;
+            target.StackCount += splitCount;
+
+            UpdateQuickBar();
+            events.InvokeEvent(EInventoryEventType.InventoryChange);
+            events.InvokeEvent(EInventoryEventType.QuickBarChanged);
+            return true;
+        }
+
+        public bool TryMergeToGridPosition(int sourceX, int sourceY, int targetX, int targetY)
+        {
+            var source = mainGrid.GetItemAt(sourceX, sourceY);
+            var target = mainGrid.GetItemAt(targetX, targetY);
+            if (source == null || target == null) return false;
+            if (!mainGrid.TryMergeStack(source.InstanceItem.InstanceID, target.InstanceItem.InstanceID)) return false;
+            UpdateQuickBar();
+            events.InvokeEvent(EInventoryEventType.InventoryChange);
+            events.InvokeEvent(EInventoryEventType.QuickBarChanged);
+            return true;
         }
     }
 }

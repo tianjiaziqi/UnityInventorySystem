@@ -24,7 +24,7 @@ public class InventoryItemView : MonoBehaviour, IBeginDragHandler, IDragHandler,
     private InventoryGridView ownerGridView;
 
     private bool rotated;
-
+    
     /// <summary>
     /// 将物品绑定到视图
     /// </summary>
@@ -136,6 +136,12 @@ public class InventoryItemView : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
     public void OnBeginDrag(PointerEventData eventData)
     {
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            ownerGridView.BeginSplitDrag(this, eventData);
+            return;
+        }
+
         ownerGridView.BeginItemDrag(this, eventData);
     }
 

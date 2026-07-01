@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using JZQ.InventorySystem.Runtime.Data;
 using JZQ.InventorySystem.Runtime.Inventory.Backpack;
@@ -275,6 +276,44 @@ namespace JZQ.InventorySystem.Runtime.Inventory.Common
                 result.Add(slot);
             }
             return result;
+        }
+
+        public bool CanMerge(string sourceId, string targetId)
+        {
+            var source = GetItemInstance(sourceId);
+            var target = GetItemInstance(targetId);
+            if(source == null || target == null) return false;
+            if(source.Definition != target.Definition) return false;
+            if(source.StackCount + target.StackCount > target.Definition.MaxStack) return false;
+            return true;
+        }
+
+        public bool TryMergeStack(string sourceId, string targetId)
+        {
+            if(!CanMerge(sourceId, targetId)) return false;
+            var source = GetItemInstance(sourceId);
+            var target = GetItemInstance(targetId);
+            target.StackCount += source.StackCount;
+            Remove(sourceId);
+            return true;
+        }
+
+        public bool TrySplitStack(string instanceId, int count, out ItemInstance newInstance)
+        {
+            newInstance = null;
+            if (count <= 0) return false;
+            var item = GetItemInstance(instanceId);
+            if (item.StackCount < count) return false;
+            newInstance = new ItemInstance(item.Definition, Guid.NewGuid().ToString(), count);
+            int remainingCount = item.StackCount - count;
+            if (remainingCount <= 0)
+            {
+                Remove(item.InstanceID);
+                return true;
+            }
+
+            item.StackCount = remainingCount;
+            return true;
         }
     }
 }

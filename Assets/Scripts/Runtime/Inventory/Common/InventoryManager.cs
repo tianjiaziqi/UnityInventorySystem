@@ -9,7 +9,7 @@ using UnityEngine.Events;
 
 namespace JZQ.InventorySystem.Runtime.Inventory.Common
 {
-    public class InventoryManager : IInventoryRuntime, IInventoryEventSource, IBackpackReadOnly, IQuickBarReadOnly, IBackpackViewRuntime
+    public class InventoryManager : IInventoryRuntime, IInventoryEventSource, IBackpackReadOnly, IQuickBarReadOnly, IBackpackViewRuntime, IBackpackCommandRuntime
     {
         private PlayerInventory playerInventory;
         private BackpackLayoutConfig backpackConfig;
@@ -69,5 +69,14 @@ namespace JZQ.InventorySystem.Runtime.Inventory.Common
         public ItemInstance[] GetQuickBarItems() => playerInventory.GetQuickBarItems();
         public bool CanConsumeByInstanceId(string instanceId, int count) => playerInventory.CanConsumeByInstanceId(instanceId, count);
         public void ConsumeByInstanceId(string instanceId, int count) => playerInventory.ConsumeByInstanceId(instanceId, count);
+        public bool TryDropItem(string instanceId, int count, out ItemInstance droppedItem) => playerInventory.TryDropItem(instanceId, count, out droppedItem);
+
+        public bool TrySplitStack(string instanceId, int splitCount, out ItemInstance newStack) => playerInventory.TrySplitStack(instanceId, splitCount, out newStack);
+
+        public bool TrySplitPlaceItem(string sourceInstanceId, int splitCount, int x, int y, bool rotated) => playerInventory.TrySplitPlaceItem(sourceInstanceId, splitCount, x, y, rotated);
+
+        public bool TryMergeItems(string sourceInstanceId, string targetInstanceId) => playerInventory.TryMergeStack(sourceInstanceId, targetInstanceId);
+
+        public bool TryMergeSplitItems(string sourceInstanceId, int splitCount, string targetInstanceId) => playerInventory.TryMergeSplitItems(sourceInstanceId, splitCount, targetInstanceId);
     }
 }

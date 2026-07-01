@@ -1,8 +1,7 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using JZQ.InventorySystem.Runtime.Core;
+using JZQ.InventorySystem.Runtime.Data;
 using JZQ.InventorySystem.Runtime.Inventory.Backpack;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -13,6 +12,13 @@ namespace JZQ.InventorySystem.Runtime.Inventory.Backpack.UI
 {
 public class InventoryGridView : MonoBehaviour
 {
+    private enum InventoryDragMode
+    {
+        None,
+        MoveWholeStack,
+        SplitStack
+    }
+
     // 格子背景层
     [SerializeField] private RectTransform slotLayer;
 
@@ -38,7 +44,7 @@ public class InventoryGridView : MonoBehaviour
     private SlotCellView[,] slotCells;
 
     //运行时缓存的物品UI, key为Instance ID
-    private Dictionary<string, InventoryItemView> itemViews = new();
+    private readonly Dictionary<string, InventoryItemView> itemViews = new();
 
     //初始化完成标识
     private bool initialized;
@@ -46,7 +52,6 @@ public class InventoryGridView : MonoBehaviour
     [SerializeField] private GridLayoutGroup slotGridLayout;
 
     private BackpackLayoutConfig dataConfig;
-    
     private InventoryViewConfig viewConfig;
 
     //拖动时的影子预制体
@@ -63,14 +68,12 @@ public class InventoryGridView : MonoBehaviour
 
     //拖拽的物品实例
     private PlacedItem draggingItem;
-    
+
     private InventoryItemView draggingItemView;
-
-    //原始位置
-    private Vector2Int originalPosition;
-
-    //原始旋转
-    private bool originalRotated;
+    private InventoryDragMode dragMode;
+    private ItemInstance splitPreviewItem;
+    private int splitDragCount;
+    private string currentMergeTargetId;
 
     //当前旋转
     private bool currentRotated;
@@ -80,14 +83,15 @@ public class InventoryGridView : MonoBehaviour
 
     //当前是否可以放置
     private bool currentPlacementValid;
+
     //当前鼠标位置
     private Vector2 currentPointerScreenPosition;
 
     // 标记拖拽是否已经被外部处理
     private bool dragHandledExternally;
-    
-    private IBackpackViewRuntime backpackView;
 
+    private IBackpackViewRuntime backpackView;
+    private IBackpackCommandRuntime backpackCommands;
 
     /// <summary>
     /// 检查是否已经初始化, 若未初始化则进行
@@ -103,6 +107,7 @@ public class InventoryGridView : MonoBehaviour
     private void Initialize(BackpackLayoutConfig dataConfig, InventoryViewConfig viewConfig)
     {
         backpackView = InventoryRuntimeSystem.BackpackViewRuntime;
+        backpackCommands = InventoryRuntimeSystem.BackpackCommandRuntime;
         this.dataConfig = dataConfig;
         this.viewConfig = viewConfig;
         cellSize = dataConfig.CellSize;
@@ -156,7 +161,6 @@ public class InventoryGridView : MonoBehaviour
         }
     }
 
-
     /// <summary>
     /// 根据玩家背包中的数据刷新背包层物品状态
     /// </summary>
@@ -170,10 +174,11 @@ public class InventoryGridView : MonoBehaviour
             if (itemViews.ContainsKey(placedItem.InstanceItem.InstanceID))
             {
                 itemView = itemViews[placedItem.InstanceItem.InstanceID];
+                itemView.Bind(placedItem);
                 itemView.SetCount(placedItem.InstanceItem.StackCount);
                 itemView.SetPosition(GridToLocalPosition(placedItem.Position.x, placedItem.Position.y));
                 itemView.SetSize(GetItemSize(placedItem.Width, placedItem.Height));
-                itemView.SetVisualLayout(itemView.GetSize(),placedItem.Rotated);
+                itemView.SetVisualLayout(itemView.GetSize(), placedItem.Rotated);
             }
             else
             {
@@ -202,8 +207,6 @@ public class InventoryGridView : MonoBehaviour
     /// <summary>
     /// 创建物品UI层实例
     /// </summary>
-    /// <param name="placedItem">放下的物品</param>
-    /// <returns></returns>
     private InventoryItemView CreateItemView(PlacedItem placedItem)
     {
         InventoryItemView itemView = Instantiate(itemPrefab, itemLayer).GetComponent<InventoryItemView>();
@@ -217,9 +220,6 @@ public class InventoryGridView : MonoBehaviour
     /// <summary>
     /// 格子坐标与本地坐标换算
     /// </summary>
-    /// <param name="x">格子x坐标</param>
-    /// <param name="y">格子y坐标</param>
-    /// <returns>本地坐标</returns>
     private Vector2 GridToLocalPosition(int x, int y)
     {
         float posX = x * (cellSize + spacing.x);
@@ -230,9 +230,6 @@ public class InventoryGridView : MonoBehaviour
     /// <summary>
     /// 根据物品长宽计算物品尺寸
     /// </summary>
-    /// <param name="width">物品宽度</param>
-    /// <param name="height">物品高度</param>
-    /// <returns>物品尺寸</returns>
     private Vector2 GetItemSize(int width, int height)
     {
         float sizeX = width * cellSize + (width - 1) * spacing.x;
@@ -243,9 +240,6 @@ public class InventoryGridView : MonoBehaviour
     /// <summary>
     /// 获取特定位置的格子视图
     /// </summary>
-    /// <param name="x">格子x坐标</param>
-    /// <param name="y">格子y坐标</param>
-    /// <returns>格子视图</returns>
     public SlotCellView GetSlotCell(int x, int y)
     {
         return slotCells[x, y];
@@ -254,10 +248,6 @@ public class InventoryGridView : MonoBehaviour
     /// <summary>
     /// 获取对应屏幕位置的格子
     /// </summary>
-    /// <param name="screenPosition"> 屏幕位置</param>
-    /// <param name="x">格子x坐标</param>
-    /// <param name="y">格子y坐标</param>
-    /// <returns>是否成功获取格子</returns>
     public bool TryGetGridPosition(Vector2 screenPosition, out int x, out int y)
     {
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(itemLayer, screenPosition, null, out var point))
@@ -275,11 +265,6 @@ public class InventoryGridView : MonoBehaviour
     /// <summary>
     /// 显示放置预览
     /// </summary>
-    /// <param name="x">格子x坐标</param>
-    /// <param name="y">格子y坐标</param>
-    /// <param name="width">物品宽度</param>
-    /// <param name="height">物品高度</param>
-    /// <param name="valid">是否有效</param>
     public void ShowPlacementPreview(int x, int y, int width, int height, bool valid)
     {
         if (x < 0 || y < 0 || x + width > dataConfig.MaxSize.x || y + height > dataConfig.MaxSize.y) return;
@@ -308,6 +293,28 @@ public class InventoryGridView : MonoBehaviour
 
     public void BeginItemDrag(InventoryItemView itemView, PointerEventData eventData)
     {
+        if (eventData.button != PointerEventData.InputButton.Left) return;
+        BeginDrag(itemView, eventData, InventoryDragMode.MoveWholeStack, 0);
+    }
+
+    public void BeginSplitDrag(InventoryItemView itemView, PointerEventData eventData)
+    {
+        if (eventData.button != PointerEventData.InputButton.Right) return;
+
+        var placedItem = itemView.GetPlacedItem();
+        if (placedItem == null) return;
+
+        int splitCount = Mathf.CeilToInt(placedItem.InstanceItem.StackCount * 0.5f);
+        if (splitCount <= 0 || splitCount >= placedItem.InstanceItem.StackCount) return;
+
+        BeginDrag(itemView, eventData, InventoryDragMode.SplitStack, splitCount);
+    }
+
+    private void BeginDrag(InventoryItemView itemView, PointerEventData eventData, InventoryDragMode mode, int pendingSplitCount)
+    {
+        if (itemView == null) return;
+        if (isDragging) CancelCurrentDrag();
+
         draggingInstanceId = itemView.GetInstanceId();
         draggingItem = itemView.GetPlacedItem();
         draggingItemView = itemView;
@@ -316,21 +323,33 @@ public class InventoryGridView : MonoBehaviour
             CancelCurrentDrag();
             return;
         }
+
+        dragMode = mode;
+        splitDragCount = pendingSplitCount;
+        splitPreviewItem = mode == InventoryDragMode.SplitStack
+            ? new ItemInstance(draggingItem.InstanceItem.Definition, Guid.NewGuid().ToString(), pendingSplitCount)
+            : null;
+
         isDragging = true;
-        
-        originalPosition = draggingItem.Position;
-        originalRotated = currentRotated= draggingItem.Rotated;
+        currentRotated = draggingItem.Rotated;
         currentPlacementValid = false;
+        currentMergeTargetId = null;
+        dragHandledExternally = false;
         currentPointerScreenPosition = eventData.position;
         currentGhost = CreateDragGhost(itemView);
-        itemView.HideVisual();
+
+        if (mode == InventoryDragMode.MoveWholeStack)
+        {
+            itemView.HideVisual();
+        }
+
         UpdateDragPreview(eventData.position);
         UpdateGhostPosition(eventData.position);
     }
 
     public void UpdateItemDrag(PointerEventData eventData)
     {
-        if(!isDragging) return;
+        if (!isDragging) return;
         currentPointerScreenPosition = eventData.position;
         UpdateGhostPosition(eventData.position);
         UpdateDragPreview(eventData.position);
@@ -338,17 +357,23 @@ public class InventoryGridView : MonoBehaviour
 
     public void EndItemDrag(PointerEventData eventData)
     {
-        if(!isDragging) return;
+        if (!isDragging) return;
+
         if (dragHandledExternally)
         {
             CancelCurrentDrag();
-            dragHandledExternally = false;
             return;
         }
-        if (currentPlacementValid)
+
+        if (dragMode == InventoryDragMode.MoveWholeStack)
         {
-            backpackView.TryMoveItemFromPlayer(draggingInstanceId, hoverGridPosition.x, hoverGridPosition.y, currentRotated);
+            CompleteMoveDrag(eventData.position);
         }
+        else if (dragMode == InventoryDragMode.SplitStack)
+        {
+            CompleteSplitDrag(eventData.position);
+        }
+
         CancelCurrentDrag();
     }
 
@@ -361,55 +386,94 @@ public class InventoryGridView : MonoBehaviour
 
     public void RotateCurrentDrag()
     {
-        if(!isDragging || currentGhost == null) return;
-        if (!draggingItem.InstanceItem.Definition.CanRotate) return;
+        if (!isDragging || currentGhost == null) return;
+        if (draggingItem == null || !draggingItem.InstanceItem.Definition.CanRotate) return;
+
         currentRotated = !currentRotated;
-        int width = currentRotated ? draggingItem.InstanceItem.Definition.Height : draggingItem.InstanceItem.Definition.Width;
-        int height = currentRotated ? draggingItem.InstanceItem.Definition.Width : draggingItem.InstanceItem.Definition.Height;
-        currentGhost.SetSize(GetItemSize(width, height));
-        currentGhost.SetVisualLayout(currentGhost.GetSize(),currentRotated);
+        currentGhost.SetSize(GetCurrentDragItemSize());
+        currentGhost.SetVisualLayout(currentGhost.GetSize(), currentRotated);
         UpdateGhostPosition(currentPointerScreenPosition);
         UpdateDragPreview(currentPointerScreenPosition);
+    }
+
+    private void CompleteMoveDrag(Vector2 screenPosition)
+    {
+        if (backpackCommands == null || backpackView == null || draggingItem == null) return;
+
+        if (!string.IsNullOrEmpty(currentMergeTargetId))
+        {
+            backpackCommands.TryMergeItems(draggingInstanceId, currentMergeTargetId);
+            return;
+        }
+
+        if (currentPlacementValid)
+        {
+            backpackView.TryMoveItemFromPlayer(draggingInstanceId, hoverGridPosition.x, hoverGridPosition.y, currentRotated);
+            return;
+        }
+
+        if (!IsPointerInsideGrid(screenPosition))
+        {
+            backpackCommands.TryDropItem(draggingInstanceId, draggingItem.InstanceItem.StackCount, out _);
+        }
+    }
+
+    private void CompleteSplitDrag(Vector2 screenPosition)
+    {
+        if (backpackCommands == null || draggingItem == null) return;
+
+        if (!string.IsNullOrEmpty(currentMergeTargetId))
+        {
+            backpackCommands.TryMergeSplitItems(draggingInstanceId, splitDragCount, currentMergeTargetId);
+            return;
+        }
+
+        if (currentPlacementValid)
+        {
+            backpackCommands.TrySplitPlaceItem(draggingInstanceId, splitDragCount, hoverGridPosition.x, hoverGridPosition.y, currentRotated);
+            return;
+        }
+
+        if (!IsPointerInsideGrid(screenPosition))
+        {
+            backpackCommands.TryDropItem(draggingInstanceId, splitDragCount, out _);
+        }
     }
 
     private void UpdateDragPreview(Vector2 screenPosition)
     {
         ClearPreview();
+        currentPlacementValid = false;
+        currentMergeTargetId = null;
 
-        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
-                itemLayer,
-                screenPosition,
-                null,
-                out var point))
+        if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(itemLayer, screenPosition, null, out var point))
         {
-            currentPlacementValid = false;
             return;
         }
-
-        
 
         int hoveredCellX = (int)Math.Floor(point.x / (cellSize + spacing.x));
         int hoveredCellY = (int)Math.Floor(-point.y / (cellSize + spacing.y));
 
-        int widthCells = currentRotated ? draggingItem.InstanceItem.Definition.Height : draggingItem.InstanceItem.Definition.Width;
-        int heightCells = currentRotated ? draggingItem.InstanceItem.Definition.Width : draggingItem.InstanceItem.Definition.Height;
+        var mergeTarget = GetPlacedItemAtCell(hoveredCellX, hoveredCellY);
 
-        int pivotOffsetX = (widthCells - 1) / 2;
-        int pivotOffsetY = (heightCells - 1) / 2;
-
-        int x = hoveredCellX - pivotOffsetX;
-        int y = hoveredCellY - pivotOffsetY;
-
-        if (x < 0 || y < 0 || x + widthCells > dataConfig.MaxSize.x || y + heightCells > dataConfig.MaxSize.y)
+        if (TryGetPlacementOrigin(point, out var placementOrigin))
         {
-            currentPlacementValid = false;
-            return;
+            hoverGridPosition = placementOrigin;
+            ApplyPlacementPreview(placementOrigin);
+
+            if (currentPlacementValid)
+            {
+                currentGhost.SetLocalPosition(GridToLocalPosition(placementOrigin.x, placementOrigin.y));
+                return;
+            }
         }
 
-        hoverGridPosition = new Vector2Int(x, y);
-        ApplyPlacementPreview(hoverGridPosition);
-        //进行格子吸附, 注释后可自由跟随鼠标移动
-        currentGhost.SetLocalPosition(GridToLocalPosition(x, y));
+        if (mergeTarget != null && CanMergeIntoTarget(mergeTarget))
+        {
+            currentMergeTargetId = mergeTarget.InstanceItem.InstanceID;
+            ShowPlacementPreview(mergeTarget.Position.x, mergeTarget.Position.y, mergeTarget.Width, mergeTarget.Height, true);
+            currentGhost.SetLocalPosition(GridToLocalPosition(mergeTarget.Position.x, mergeTarget.Position.y));
+        }
     }
 
     private void UpdateGhostPosition(Vector2 screenPosition)
@@ -426,25 +490,94 @@ public class InventoryGridView : MonoBehaviour
     private Vector2 GetCurrentDragItemSize()
     {
         if (draggingItem == null) return Vector2.zero;
+        return GetItemSize(GetCurrentDragWidth(), GetCurrentDragHeight());
+    }
 
-        int width = currentRotated
-            ? draggingItem.InstanceItem.Definition.Height
-            : draggingItem.InstanceItem.Definition.Width;
+    private int GetCurrentDragWidth()
+    {
+        return currentRotated ? draggingItem.InstanceItem.Definition.Height : draggingItem.InstanceItem.Definition.Width;
+    }
 
-        int height = currentRotated
-            ? draggingItem.InstanceItem.Definition.Width
-            : draggingItem.InstanceItem.Definition.Height;
+    private int GetCurrentDragHeight()
+    {
+        return currentRotated ? draggingItem.InstanceItem.Definition.Width : draggingItem.InstanceItem.Definition.Height;
+    }
 
-        return GetItemSize(width, height);
+    private ItemInstance GetCurrentDragItem()
+    {
+        if (dragMode == InventoryDragMode.SplitStack)
+        {
+            return splitPreviewItem;
+        }
+
+        return draggingItem?.InstanceItem;
+    }
+
+    private int GetCurrentDragStackCount()
+    {
+        return dragMode == InventoryDragMode.SplitStack ? splitDragCount : draggingItem?.InstanceItem.StackCount ?? 0;
     }
 
     private void ApplyPlacementPreview(Vector2Int hoveredGridPos)
     {
-        currentPlacementValid = backpackView.CanMovePlayerItemTo(draggingInstanceId, hoveredGridPos.x, hoveredGridPos.y, currentRotated);
-        int width = currentRotated ? draggingItem.InstanceItem.Definition.Height : draggingItem.InstanceItem.Definition.Width;
-        int height = currentRotated ? draggingItem.InstanceItem.Definition.Width : draggingItem.InstanceItem.Definition.Height;
-        
-        ShowPlacementPreview(hoveredGridPos.x, hoveredGridPos.y, width, height, currentPlacementValid);
+        var dragItem = GetCurrentDragItem();
+        if (dragItem == null) return;
+
+        currentPlacementValid = dragMode == InventoryDragMode.MoveWholeStack
+            ? backpackView.CanMovePlayerItemTo(draggingInstanceId, hoveredGridPos.x, hoveredGridPos.y, currentRotated)
+            : backpackView.CanPlaceItemInPlayer(dragItem, hoveredGridPos.x, hoveredGridPos.y, currentRotated);
+
+        ShowPlacementPreview(hoveredGridPos.x, hoveredGridPos.y, GetCurrentDragWidth(), GetCurrentDragHeight(), currentPlacementValid);
+    }
+
+    private bool TryGetPlacementOrigin(Vector2 localPoint, out Vector2Int origin)
+    {
+        int hoveredCellX = (int)Math.Floor(localPoint.x / (cellSize + spacing.x));
+        int hoveredCellY = (int)Math.Floor(-localPoint.y / (cellSize + spacing.y));
+
+        int pivotOffsetX = (GetCurrentDragWidth() - 1) / 2;
+        int pivotOffsetY = (GetCurrentDragHeight() - 1) / 2;
+
+        int x = hoveredCellX - pivotOffsetX;
+        int y = hoveredCellY - pivotOffsetY;
+
+        if (x < 0 || y < 0 || x + GetCurrentDragWidth() > dataConfig.MaxSize.x || y + GetCurrentDragHeight() > dataConfig.MaxSize.y)
+        {
+            origin = default;
+            return false;
+        }
+
+        origin = new Vector2Int(x, y);
+        return true;
+    }
+
+    private PlacedItem GetPlacedItemAtCell(int x, int y)
+    {
+        if (x < 0 || y < 0 || x >= dataConfig.MaxSize.x || y >= dataConfig.MaxSize.y) return null;
+
+        foreach (var placedItem in backpackView.GetPlayerPlacedItems())
+        {
+            if (x >= placedItem.Position.x && x < placedItem.Position.x + placedItem.Width &&
+                y >= placedItem.Position.y && y < placedItem.Position.y + placedItem.Height)
+            {
+                return placedItem;
+            }
+        }
+
+        return null;
+    }
+
+    private bool CanMergeIntoTarget(PlacedItem target)
+    {
+        if (target == null || draggingItem == null) return false;
+        if (target.InstanceItem.InstanceID == draggingInstanceId) return false;
+        if (target.InstanceItem.Definition != draggingItem.InstanceItem.Definition) return false;
+        return target.InstanceItem.StackCount + GetCurrentDragStackCount() <= target.InstanceItem.Definition.MaxStack;
+    }
+
+    private bool IsPointerInsideGrid(Vector2 screenPosition)
+    {
+        return RectTransformUtility.RectangleContainsScreenPoint(itemLayer, screenPosition, null);
     }
 
     private void ClearCurrentDragState()
@@ -454,11 +587,17 @@ public class InventoryGridView : MonoBehaviour
             draggingItemView.ShowVisual();
             draggingItemView = null;
         }
-        
+
         isDragging = false;
         draggingInstanceId = null;
         draggingItem = null;
+        dragMode = InventoryDragMode.None;
+        splitPreviewItem = null;
+        splitDragCount = 0;
+        currentMergeTargetId = null;
         currentPlacementValid = false;
+        dragHandledExternally = false;
+
         if (currentGhost != null)
         {
             Destroy(currentGhost.gameObject);
@@ -470,17 +609,15 @@ public class InventoryGridView : MonoBehaviour
     {
         InventoryDragGhostView ghost = Instantiate(dragGhostPrefab, previewLayer);
         ghost.SetIcon(itemView.GetIcon());
-        int width = currentRotated ? draggingItem.InstanceItem.Definition.Height : draggingItem.InstanceItem.Definition.Width;
-        int height = currentRotated ? draggingItem.InstanceItem.Definition.Width : draggingItem.InstanceItem.Definition.Height;
-        ghost.SetSize(GetItemSize(width, height));
+        ghost.SetSize(GetCurrentDragItemSize());
         ghost.SetAlpha(0.6f);
-        ghost.SetVisualLayout(ghost.GetSize(),currentRotated);
+        ghost.SetVisualLayout(ghost.GetSize(), currentRotated);
         return ghost;
     }
 
     public bool TryBindDraggedItemToQuickSlot(int slotIndex)
     {
-        if (!isDragging) return false;
+        if (!isDragging || dragMode != InventoryDragMode.MoveWholeStack) return false;
         backpackView.BindPlayerQuickSlot(slotIndex, draggingInstanceId);
         dragHandledExternally = true;
         return true;

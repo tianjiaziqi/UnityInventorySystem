@@ -31,6 +31,7 @@ namespace JZQ.InventorySystem.Runtime.Core
             InventorySystem.SetBackpackReadOnly(Manager);
             InventorySystem.SetQuickBarReadOnly(Manager);
             InventorySystem.SetBackpackViewRuntime(Manager);
+            InventorySystem.SetBackpackCommandRuntime(Manager);
         }
     }
 }

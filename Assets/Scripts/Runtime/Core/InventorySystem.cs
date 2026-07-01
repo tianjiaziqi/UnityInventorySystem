@@ -12,6 +12,8 @@ namespace JZQ.InventorySystem.Runtime.Core
         public static IQuickBarReadOnly QuickBarReadOnly { get; internal set; }
         
         public static IBackpackViewRuntime BackpackViewRuntime { get; internal set; }
+        
+        public static IBackpackCommandRuntime BackpackCommandRuntime { get; internal set; }
 
         public static void SetCurrent(IInventoryRuntime runtime) => Runtime = runtime;
         public static void SetEvents(IInventoryEventSource events) => Events = events;
@@ -20,6 +22,7 @@ namespace JZQ.InventorySystem.Runtime.Core
         public static void SetQuickBarReadOnly(IQuickBarReadOnly quickBarReadOnly) => QuickBarReadOnly = quickBarReadOnly;
         
         public static void SetBackpackViewRuntime(IBackpackViewRuntime backpackViewRuntime) => BackpackViewRuntime = backpackViewRuntime;
+        public static void SetBackpackCommandRuntime(IBackpackCommandRuntime backpackCommandRuntime) => BackpackCommandRuntime = backpackCommandRuntime;
 
         public static void ClearInterfaces(InventoryManager manager)
         {
@@ -44,6 +47,10 @@ namespace JZQ.InventorySystem.Runtime.Core
             if (BackpackViewRuntime == manager)
             {
                 BackpackViewRuntime = null;
+            }
+            if (BackpackCommandRuntime == manager)
+            {
+                BackpackCommandRuntime = null;
             }
         }
     }
