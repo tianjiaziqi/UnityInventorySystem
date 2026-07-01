@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using JZQ.InventorySystem.Runtime.Core;
 using JZQ.InventorySystem.Runtime.Inventory.QuickBar;
 using JZQ.InventorySystem.Runtime.UI;
@@ -8,42 +6,54 @@ using InventoryRuntimeSystem = JZQ.InventorySystem.Runtime.Core.InventorySystem;
 
 namespace JZQ.InventorySystem.Runtime.Inventory.QuickBar.UI
 {
-public class QuickBarPanel : InventoryPanelBase
-{
-    
-    [SerializeField] private QuickBarGridView quickBarGridView;
-    
-    private bool isInitialized;
-    
-    private IInventoryEventSource events;
+    /// <summary>
+    /// Controls quick bar panel lifecycle and refresh behavior.
+    /// </summary>
+    public class QuickBarPanel : InventoryPanelBase
+    {
+        [SerializeField] private QuickBarGridView quickBarGridView;
+        private bool isInitialized;
+        private IInventoryEventSource events;
 
-    public void Initialize(QuickBarConfig quickBarConfig, InventoryViewConfig viewConfig)
-    {
-        if (isInitialized) return;
-        events = InventoryRuntimeSystem.Events;
-        quickBarGridView.InitializeIfNeed(quickBarConfig, viewConfig);
-        isInitialized = true;
-    }
-    public override void Show()
-    {
-        if (!isInitialized)
+        /// <summary>
+        /// Initializes the quick bar panel and its grid view.
+        /// </summary>
+        /// <param name="quickBarConfig">The quick bar configuration.</param>
+        /// <param name="viewConfig">The shared inventory view configuration.</param>
+        public void Initialize(QuickBarConfig quickBarConfig, InventoryViewConfig viewConfig)
         {
-            Debug.LogError("QuickBarPanel must be initialized before show");
-            return;
+            if (isInitialized) return;
+            events = InventoryRuntimeSystem.Events;
+            quickBarGridView.InitializeIfNeed(quickBarConfig, viewConfig);
+            isInitialized = true;
         }
-        
-        events.RegisterEvent(EInventoryEventType.QuickBarChanged, OnQuickBarChange);
-        events.RegisterEvent(EInventoryEventType.QuickBarSelectionChanged, OnQuiBarSelectionChanged);
-        events.RegisterEvent(EInventoryEventType.InventoryChange, OnInventoryChanged);
-        quickBarGridView.RefreshAll();
-    }
 
-    public override void Hide()
-    {
-        events.UnregisterEvent(EInventoryEventType.QuickBarChanged, OnQuickBarChange);
-        events.UnregisterEvent(EInventoryEventType.QuickBarSelectionChanged, OnQuiBarSelectionChanged);
-        events.UnregisterEvent(EInventoryEventType.InventoryChange, OnInventoryChanged);
-    }
+        /// <summary>
+        /// Shows the quick bar panel and starts listening to runtime updates.
+        /// </summary>
+        public override void Show()
+        {
+            if (!isInitialized)
+            {
+                Debug.LogError("QuickBarPanel must be initialized before show");
+                return;
+            }
+
+            events.RegisterEvent(EInventoryEventType.QuickBarChanged, OnQuickBarChange);
+            events.RegisterEvent(EInventoryEventType.QuickBarSelectionChanged, OnQuiBarSelectionChanged);
+            events.RegisterEvent(EInventoryEventType.InventoryChange, OnInventoryChanged);
+            quickBarGridView.RefreshAll();
+        }
+
+        /// <summary>
+        /// Hides the quick bar panel and stops listening to runtime updates.
+        /// </summary>
+        public override void Hide()
+        {
+            events.UnregisterEvent(EInventoryEventType.QuickBarChanged, OnQuickBarChange);
+            events.UnregisterEvent(EInventoryEventType.QuickBarSelectionChanged, OnQuiBarSelectionChanged);
+            events.UnregisterEvent(EInventoryEventType.InventoryChange, OnInventoryChanged);
+        }
 
     private void OnQuickBarChange()
     {
@@ -59,5 +69,5 @@ public class QuickBarPanel : InventoryPanelBase
     {
         quickBarGridView.RefreshAll();
     }
-}
+    }
 }

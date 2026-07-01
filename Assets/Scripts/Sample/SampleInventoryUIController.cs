@@ -7,20 +7,21 @@ using InventoryRuntimeSystem = JZQ.InventorySystem.Runtime.Core.InventorySystem;
 
 namespace JZQ.InventorySystem.Sample
 {
-public class SampleInventoryUIController : MonoBehaviour
-{
-    [SerializeField] private InventorySystemBootstrap bootstrap;
-    [SerializeField] private BackpackPanel backpackPanel;
-    [SerializeField] private QuickBarPanel quickBarPanel;
-    
-    private SampleInventoryInput inventoryInput;
-    private void Awake()
+    /// <summary>
+    /// Wires sample input to the sample backpack and quick bar UI.
+    /// </summary>
+    public class SampleInventoryUIController : MonoBehaviour
     {
-        
+        [SerializeField] private InventorySystemBootstrap bootstrap;
+        [SerializeField] private BackpackPanel backpackPanel;
+        [SerializeField] private QuickBarPanel quickBarPanel;
+        private SampleInventoryInput inventoryInput;
 
-        backpackPanel.CloseRequested += HandleBackpackCloseRequested;
-        inventoryInput = GetComponent<SampleInventoryInput>();
-    }
+        private void Awake()
+        {
+            backpackPanel.CloseRequested += HandleBackpackCloseRequested;
+            inventoryInput = GetComponent<SampleInventoryInput>();
+        }
 
     private void Start()
     {
@@ -45,25 +46,31 @@ public class SampleInventoryUIController : MonoBehaviour
         CloseBackpack();
     }
 
-    public void CloseBackpack()
-    {
-        backpackPanel.Hide();
-        backpackPanel.gameObject.SetActive(false);
-    }
+        /// <summary>
+        /// Closes the sample backpack panel.
+        /// </summary>
+        public void CloseBackpack()
+        {
+            backpackPanel.Hide();
+            backpackPanel.gameObject.SetActive(false);
+        }
 
-    public void OpenBackpack()
-    {
-        backpackPanel.gameObject.SetActive(true);
-        backpackPanel.Show();
-    }
-    
-    private void Update()
-    {
-        HandleNumberInput();
-        HandleScrollInput();
-        HandleRotation();
-        HandleBackpackShowHide();
-    }
+        /// <summary>
+        /// Opens the sample backpack panel.
+        /// </summary>
+        public void OpenBackpack()
+        {
+            backpackPanel.gameObject.SetActive(true);
+            backpackPanel.Show();
+        }
+
+        private void Update()
+        {
+            HandleNumberInput();
+            HandleScrollInput();
+            HandleRotation();
+            HandleBackpackShowHide();
+        }
 
     private void HandleNumberInput()
     {
@@ -109,5 +116,5 @@ public class SampleInventoryUIController : MonoBehaviour
             }
         }
     }
-}
+    }
 }

@@ -10,8 +10,11 @@ using InventoryRuntimeSystem = JZQ.InventorySystem.Runtime.Core.InventorySystem;
 
 namespace JZQ.InventorySystem.Runtime.Inventory.Backpack.UI
 {
-public class InventoryGridView : MonoBehaviour
-{
+    /// <summary>
+    /// Builds the backpack grid UI and coordinates drag-based item interactions.
+    /// </summary>
+    public class InventoryGridView : MonoBehaviour
+    {
     private enum InventoryDragMode
     {
         None,
@@ -19,34 +22,15 @@ public class InventoryGridView : MonoBehaviour
         SplitStack
     }
 
-    // 格子背景层
     [SerializeField] private RectTransform slotLayer;
-
-    //物品层
     [SerializeField] private RectTransform itemLayer;
-
-    //预览层
     [SerializeField] private RectTransform previewLayer;
-
-    //格子预制体
     [SerializeField] private SlotCellView slotPrefab;
-
-    //物品框架预制体, 运行时更新信息
     [SerializeField] private InventoryItemView itemPrefab;
-
-    //格子大小
     private float cellSize = 64f;
-
-    // 格子间距
     private Vector2 spacing = Vector2.zero;
-
-    //运行时存储生成的格子, 索引与坐标匹配
     private SlotCellView[,] slotCells;
-
-    //运行时缓存的物品UI, key为Instance ID
     private readonly Dictionary<string, InventoryItemView> itemViews = new();
-
-    //初始化完成标识
     private bool initialized;
 
     [SerializeField] private GridLayoutGroup slotGridLayout;
@@ -54,19 +38,10 @@ public class InventoryGridView : MonoBehaviour
     private BackpackLayoutConfig dataConfig;
     private InventoryViewConfig viewConfig;
 
-    //拖动时的影子预制体
     [SerializeField] private InventoryDragGhostView dragGhostPrefab;
-
-    // 当前影子
     private InventoryDragGhostView currentGhost;
-
-    //是否正在拖拽
     private bool isDragging;
-
-    //拖拽物品的实例ID
     private string draggingInstanceId;
-
-    //拖拽的物品实例
     private PlacedItem draggingItem;
 
     private InventoryItemView draggingItemView;
@@ -75,35 +50,30 @@ public class InventoryGridView : MonoBehaviour
     private int splitDragCount;
     private string currentMergeTargetId;
 
-    //当前旋转
     private bool currentRotated;
-
-    //当前鼠标所在格子
     private Vector2Int hoverGridPosition;
-
-    //当前是否可以放置
     private bool currentPlacementValid;
-
-    //当前鼠标位置
     private Vector2 currentPointerScreenPosition;
-
-    // 标记拖拽是否已经被外部处理
     private bool dragHandledExternally;
 
     private IBackpackViewRuntime backpackView;
     private IBackpackCommandRuntime backpackCommands;
 
     /// <summary>
-    /// 检查是否已经初始化, 若未初始化则进行
+    /// Initializes the grid view when needed.
     /// </summary>
+    /// <param name="dataConfig">The backpack layout configuration.</param>
+    /// <param name="viewConfig">The shared inventory view configuration.</param>
     public void InitializeIfNeeded(BackpackLayoutConfig dataConfig, InventoryViewConfig viewConfig)
     {
         if (!initialized) Initialize(dataConfig, viewConfig);
     }
 
     /// <summary>
-    /// 初始化
+    /// Builds the grid view using the provided runtime configuration.
     /// </summary>
+    /// <param name="dataConfig">The backpack layout configuration.</param>
+    /// <param name="viewConfig">The shared inventory view configuration.</param>
     private void Initialize(BackpackLayoutConfig dataConfig, InventoryViewConfig viewConfig)
     {
         backpackView = InventoryRuntimeSystem.BackpackViewRuntime;
@@ -122,7 +92,7 @@ public class InventoryGridView : MonoBehaviour
     }
 
     /// <summary>
-    /// 创建所有格子
+    /// Creates all slot cell views for the configured backpack dimensions.
     /// </summary>
     private void CreateSlots()
     {
@@ -139,7 +109,7 @@ public class InventoryGridView : MonoBehaviour
     }
 
     /// <summary>
-    /// 刷新所有状态
+    /// Refreshes slot state and item visuals.
     /// </summary>
     public void RefreshAll()
     {
@@ -148,7 +118,7 @@ public class InventoryGridView : MonoBehaviour
     }
 
     /// <summary>
-    /// 刷新格子状态
+    /// Refreshes the unlocked state of all grid cells.
     /// </summary>
     private void RefreshSlots()
     {
@@ -162,7 +132,7 @@ public class InventoryGridView : MonoBehaviour
     }
 
     /// <summary>
-    /// 根据玩家背包中的数据刷新背包层物品状态
+    /// Refreshes item views to match the current backpack runtime state.
     /// </summary>
     private void RefreshItems()
     {
@@ -205,8 +175,10 @@ public class InventoryGridView : MonoBehaviour
     }
 
     /// <summary>
-    /// 创建物品UI层实例
+    /// Creates a new item view for the specified placed item.
     /// </summary>
+    /// <param name="placedItem">The placed item to visualize.</param>
+    /// <returns>The created item view.</returns>
     private InventoryItemView CreateItemView(PlacedItem placedItem)
     {
         InventoryItemView itemView = Instantiate(itemPrefab, itemLayer).GetComponent<InventoryItemView>();
@@ -218,8 +190,11 @@ public class InventoryGridView : MonoBehaviour
     }
 
     /// <summary>
-    /// 格子坐标与本地坐标换算
+    /// Converts grid coordinates to local UI coordinates.
     /// </summary>
+    /// <param name="x">The grid x coordinate.</param>
+    /// <param name="y">The grid y coordinate.</param>
+    /// <returns>The corresponding local UI position.</returns>
     private Vector2 GridToLocalPosition(int x, int y)
     {
         float posX = x * (cellSize + spacing.x);
@@ -228,8 +203,11 @@ public class InventoryGridView : MonoBehaviour
     }
 
     /// <summary>
-    /// 根据物品长宽计算物品尺寸
+    /// Calculates the UI size of an item from grid dimensions.
     /// </summary>
+    /// <param name="width">The item width in cells.</param>
+    /// <param name="height">The item height in cells.</param>
+    /// <returns>The calculated UI size.</returns>
     private Vector2 GetItemSize(int width, int height)
     {
         float sizeX = width * cellSize + (width - 1) * spacing.x;
@@ -238,16 +216,23 @@ public class InventoryGridView : MonoBehaviour
     }
 
     /// <summary>
-    /// 获取特定位置的格子视图
+    /// Gets the slot cell view at the specified grid coordinate.
     /// </summary>
+    /// <param name="x">The grid x coordinate.</param>
+    /// <param name="y">The grid y coordinate.</param>
+    /// <returns>The matching slot cell view.</returns>
     public SlotCellView GetSlotCell(int x, int y)
     {
         return slotCells[x, y];
     }
 
     /// <summary>
-    /// 获取对应屏幕位置的格子
+    /// Converts a screen position to a backpack grid coordinate.
     /// </summary>
+    /// <param name="screenPosition">The screen position to convert.</param>
+    /// <param name="x">The resolved grid x coordinate.</param>
+    /// <param name="y">The resolved grid y coordinate.</param>
+    /// <returns><c>true</c> if the position resolves to a valid grid cell; otherwise, <c>false</c>.</returns>
     public bool TryGetGridPosition(Vector2 screenPosition, out int x, out int y)
     {
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(itemLayer, screenPosition, null, out var point))
@@ -263,8 +248,13 @@ public class InventoryGridView : MonoBehaviour
     }
 
     /// <summary>
-    /// 显示放置预览
+    /// Displays a placement preview over the specified grid area.
     /// </summary>
+    /// <param name="x">The preview origin x coordinate.</param>
+    /// <param name="y">The preview origin y coordinate.</param>
+    /// <param name="width">The preview width in cells.</param>
+    /// <param name="height">The preview height in cells.</param>
+    /// <param name="valid">Whether the preview should use the valid state.</param>
     public void ShowPlacementPreview(int x, int y, int width, int height, bool valid)
     {
         if (x < 0 || y < 0 || x + width > dataConfig.MaxSize.x || y + height > dataConfig.MaxSize.y) return;
@@ -281,7 +271,7 @@ public class InventoryGridView : MonoBehaviour
     }
 
     /// <summary>
-    /// 清除所有预览
+    /// Clears all placement preview visuals.
     /// </summary>
     public void ClearPreview()
     {
@@ -291,12 +281,22 @@ public class InventoryGridView : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Begins dragging a full item stack.
+    /// </summary>
+    /// <param name="itemView">The item view being dragged.</param>
+    /// <param name="eventData">The Unity pointer event data.</param>
     public void BeginItemDrag(InventoryItemView itemView, PointerEventData eventData)
     {
         if (eventData.button != PointerEventData.InputButton.Left) return;
         BeginDrag(itemView, eventData, InventoryDragMode.MoveWholeStack, 0);
     }
 
+    /// <summary>
+    /// Begins dragging a split stack preview.
+    /// </summary>
+    /// <param name="itemView">The item view being dragged.</param>
+    /// <param name="eventData">The Unity pointer event data.</param>
     public void BeginSplitDrag(InventoryItemView itemView, PointerEventData eventData)
     {
         if (eventData.button != PointerEventData.InputButton.Right) return;
@@ -347,6 +347,10 @@ public class InventoryGridView : MonoBehaviour
         UpdateGhostPosition(eventData.position);
     }
 
+    /// <summary>
+    /// Updates the active drag interaction.
+    /// </summary>
+    /// <param name="eventData">The Unity pointer event data.</param>
     public void UpdateItemDrag(PointerEventData eventData)
     {
         if (!isDragging) return;
@@ -355,6 +359,10 @@ public class InventoryGridView : MonoBehaviour
         UpdateDragPreview(eventData.position);
     }
 
+    /// <summary>
+    /// Ends the active drag interaction.
+    /// </summary>
+    /// <param name="eventData">The Unity pointer event data.</param>
     public void EndItemDrag(PointerEventData eventData)
     {
         if (!isDragging) return;
@@ -377,6 +385,9 @@ public class InventoryGridView : MonoBehaviour
         CancelCurrentDrag();
     }
 
+    /// <summary>
+    /// Cancels the current drag interaction and restores the UI state.
+    /// </summary>
     public void CancelCurrentDrag()
     {
         ClearPreview();
@@ -384,6 +395,9 @@ public class InventoryGridView : MonoBehaviour
         RefreshItems();
     }
 
+    /// <summary>
+    /// Rotates the current drag preview when supported by the item.
+    /// </summary>
     public void RotateCurrentDrag()
     {
         if (!isDragging || currentGhost == null) return;
@@ -615,6 +629,11 @@ public class InventoryGridView : MonoBehaviour
         return ghost;
     }
 
+    /// <summary>
+    /// Attempts to bind the currently dragged item to a quick slot.
+    /// </summary>
+    /// <param name="slotIndex">The target quick slot index.</param>
+    /// <returns><c>true</c> if the bind request was accepted; otherwise, <c>false</c>.</returns>
     public bool TryBindDraggedItemToQuickSlot(int slotIndex)
     {
         if (!isDragging || dragMode != InventoryDragMode.MoveWholeStack) return false;

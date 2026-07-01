@@ -1,31 +1,39 @@
-using System.Collections;
 using System.Collections.Generic;
 using JZQ.InventorySystem.Runtime.Core;
 using JZQ.InventorySystem.Runtime.Inventory.QuickBar;
 using UnityEngine;
-using UnityEngine.UI;
 using InventoryRuntimeSystem = JZQ.InventorySystem.Runtime.Core.InventorySystem;
 
 namespace JZQ.InventorySystem.Runtime.Inventory.QuickBar.UI
 {
-public class QuickBarGridView : MonoBehaviour
-{
-    [SerializeField] private QuickBarSlotView slotPrefab;
-    [SerializeField] private HorizontalLayoutGroup layoutGroup;
-    private List<QuickBarSlotView> slots;
-    private QuickBarConfig dataConfig;
-    private InventoryViewConfig viewConfig;
-    private int selectedIndex;
-    private bool initialized;
-    private IQuickBarReadOnly quickBarReadOnly;
-    
-    public bool Initialized => initialized;
-
-    public void InitializeIfNeed(QuickBarConfig dataConfig, InventoryViewConfig viewConfig)
+    /// <summary>
+    /// Builds and refreshes the quick bar slot views.
+    /// </summary>
+    public class QuickBarGridView : MonoBehaviour
     {
-        if (initialized) return;
-        Initialize(dataConfig, viewConfig);
-    }
+        [SerializeField] private QuickBarSlotView slotPrefab;
+        private List<QuickBarSlotView> slots;
+        private QuickBarConfig dataConfig;
+        private InventoryViewConfig viewConfig;
+        private int selectedIndex;
+        private bool initialized;
+        private IQuickBarReadOnly quickBarReadOnly;
+
+        /// <summary>
+        /// Gets whether the quick bar grid view has been initialized.
+        /// </summary>
+        public bool Initialized => initialized;
+
+        /// <summary>
+        /// Initializes the quick bar grid view when needed.
+        /// </summary>
+        /// <param name="dataConfig">The quick bar configuration.</param>
+        /// <param name="viewConfig">The shared inventory view configuration.</param>
+        public void InitializeIfNeed(QuickBarConfig dataConfig, InventoryViewConfig viewConfig)
+        {
+            if (initialized) return;
+            Initialize(dataConfig, viewConfig);
+        }
 
     private void Initialize(QuickBarConfig dataConfig, InventoryViewConfig viewConfig)
     {
@@ -67,27 +75,36 @@ public class QuickBarGridView : MonoBehaviour
         }
     }
 
-    public void UpdateSelection()
-    {
-        int index = quickBarReadOnly.GetQuickBarSelectedIndex();
-        if (index != selectedIndex)
+        /// <summary>
+        /// Updates the selected slot highlight from runtime state.
+        /// </summary>
+        public void UpdateSelection()
         {
-            SelectSlot(index);
+            int index = quickBarReadOnly.GetQuickBarSelectedIndex();
+            if (index != selectedIndex)
+            {
+                SelectSlot(index);
+            }
         }
-        
-    }
 
-    public void SelectSlot(int index)
-    {
-        slots[selectedIndex].SetSelection(false);
-        selectedIndex = index;
-        slots[selectedIndex].SetSelection(true);
+        /// <summary>
+        /// Selects the specified quick bar slot view.
+        /// </summary>
+        /// <param name="index">The quick bar slot index to highlight.</param>
+        public void SelectSlot(int index)
+        {
+            slots[selectedIndex].SetSelection(false);
+            selectedIndex = index;
+            slots[selectedIndex].SetSelection(true);
+        }
+
+        /// <summary>
+        /// Refreshes quick bar slot content and selection state.
+        /// </summary>
+        public void RefreshAll()
+        {
+            UpdateSlots();
+            UpdateSelection();
+        }
     }
-    
-    public void RefreshAll()
-    {
-        UpdateSlots();
-        UpdateSelection();
-    }
-}
 }

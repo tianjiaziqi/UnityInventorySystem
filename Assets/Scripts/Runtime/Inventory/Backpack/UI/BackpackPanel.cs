@@ -10,62 +10,83 @@ using InventoryRuntimeSystem = JZQ.InventorySystem.Runtime.Core.InventorySystem;
 
 namespace JZQ.InventorySystem.Runtime.Inventory.Backpack.UI
 {
-public class BackpackPanel : InventoryPanelBase
-{
-    [SerializeField] InventoryGridView inventoryGridView;
-    [SerializeField] private float blinkTime = 0.5f;
-    private TMP_Text weightText;
-    private Coroutine weightBlinkCoroutine;
-    public UnityAction CloseRequested;
-    private IBackpackReadOnly backpackSources;
-    private IInventoryEventSource events;
-
-    private bool isInitialized;
-
-    private void Start()
+    /// <summary>
+    /// Controls backpack panel lifecycle and refresh behavior.
+    /// </summary>
+    public class BackpackPanel : InventoryPanelBase
     {
-        GetUIComponent<Button>("CloseButton").onClick.AddListener(RequestClose);
-        backpackSources = InventoryRuntimeSystem.BackpackReadOnly;
-        events = InventoryRuntimeSystem.Events;
-    }
+        [SerializeField] private InventoryGridView inventoryGridView;
+        [SerializeField] private float blinkTime = 0.5f;
+        private TMP_Text weightText;
+        private Coroutine weightBlinkCoroutine;
+        private IBackpackReadOnly backpackSources;
+        private IInventoryEventSource events;
+        private bool isInitialized;
 
-    public void Initialize(BackpackLayoutConfig dataConfig, InventoryViewConfig viewConfig)
-    {
-        if (isInitialized) return;
-        inventoryGridView.InitializeIfNeeded(dataConfig, viewConfig);
-        weightText = GetUIComponent<TMP_Text>("WeightText");
-        isInitialized = true;
-    }
+        /// <summary>
+        /// Raised when the panel requests to be closed.
+        /// </summary>
+        public UnityAction CloseRequested;
 
-    public override void Show()
-    {
-        if (!isInitialized)
+        private void Start()
         {
-            Debug.LogError("BackpackPanel must be initialized before show");
-            return;
+            GetUIComponent<Button>("CloseButton").onClick.AddListener(RequestClose);
+            backpackSources = InventoryRuntimeSystem.BackpackReadOnly;
+            events = InventoryRuntimeSystem.Events;
         }
-        events.RegisterEvent(EInventoryEventType.InventoryUnlockChange, OnInventoryChanged);
-        events.RegisterEvent(EInventoryEventType.InventoryChange, OnInventoryChanged);
-        UpdateWeightState();
-        inventoryGridView.RefreshAll();
-    }
 
-    public override void Hide()
-    {
-        events.UnregisterEvent(EInventoryEventType.InventoryUnlockChange, OnInventoryChanged);
-        events.UnregisterEvent(EInventoryEventType.InventoryChange, OnInventoryChanged);
-        if(weightBlinkCoroutine != null) 
+        /// <summary>
+        /// Initializes the backpack panel and its grid view.
+        /// </summary>
+        /// <param name="dataConfig">The backpack layout configuration.</param>
+        /// <param name="viewConfig">The shared inventory view configuration.</param>
+        public void Initialize(BackpackLayoutConfig dataConfig, InventoryViewConfig viewConfig)
         {
-            StopCoroutine(weightBlinkCoroutine);
-            weightBlinkCoroutine = null;
+            if (isInitialized) return;
+            inventoryGridView.InitializeIfNeeded(dataConfig, viewConfig);
+            weightText = GetUIComponent<TMP_Text>("WeightText");
+            isInitialized = true;
         }
-    }
 
-    public void OnInventoryChanged()
-    {
-        inventoryGridView.RefreshAll();
-        UpdateWeightState();
-    }
+        /// <summary>
+        /// Shows the backpack panel and starts listening to inventory updates.
+        /// </summary>
+        public override void Show()
+        {
+            if (!isInitialized)
+            {
+                Debug.LogError("BackpackPanel must be initialized before show");
+                return;
+            }
+
+            events.RegisterEvent(EInventoryEventType.InventoryUnlockChange, OnInventoryChanged);
+            events.RegisterEvent(EInventoryEventType.InventoryChange, OnInventoryChanged);
+            UpdateWeightState();
+            inventoryGridView.RefreshAll();
+        }
+
+        /// <summary>
+        /// Hides the backpack panel and stops listening to inventory updates.
+        /// </summary>
+        public override void Hide()
+        {
+            events.UnregisterEvent(EInventoryEventType.InventoryUnlockChange, OnInventoryChanged);
+            events.UnregisterEvent(EInventoryEventType.InventoryChange, OnInventoryChanged);
+            if (weightBlinkCoroutine != null)
+            {
+                StopCoroutine(weightBlinkCoroutine);
+                weightBlinkCoroutine = null;
+            }
+        }
+
+        /// <summary>
+        /// Refreshes the backpack panel after an inventory state change.
+        /// </summary>
+        public void OnInventoryChanged()
+        {
+            inventoryGridView.RefreshAll();
+            UpdateWeightState();
+        }
 
     private void UpdateWeightState()
     {
@@ -107,10 +128,13 @@ public class BackpackPanel : InventoryPanelBase
     }
     
 
-    public void RotateDrag()
-    {
-        inventoryGridView.RotateCurrentDrag();
-    }
+        /// <summary>
+        /// Rotates the currently dragged backpack item preview.
+        /// </summary>
+        public void RotateDrag()
+        {
+            inventoryGridView.RotateCurrentDrag();
+        }
 
     private IEnumerator WeightBlink()
     {
@@ -123,9 +147,9 @@ public class BackpackPanel : InventoryPanelBase
         }
     }
 
-    private void RequestClose()
-    {
-        CloseRequested?.Invoke();
+        private void RequestClose()
+        {
+            CloseRequested?.Invoke();
+        }
     }
-}
 }

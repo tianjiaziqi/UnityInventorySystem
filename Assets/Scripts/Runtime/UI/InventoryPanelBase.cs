@@ -4,16 +4,34 @@ using UnityEngine.EventSystems;
 
 namespace JZQ.InventorySystem.Runtime.UI
 {
+    /// <summary>
+    /// Provides shared UI utility methods for inventory panels.
+    /// </summary>
     public abstract class InventoryPanelBase : MonoBehaviour
     {
-        private Dictionary<string, UIBehaviour> components = new();
+        private readonly Dictionary<string, UIBehaviour> components = new();
 
+        /// <summary>
+        /// Shows the panel and starts any required runtime bindings.
+        /// </summary>
         public abstract void Show();
 
+        /// <summary>
+        /// Hides the panel and releases any runtime bindings.
+        /// </summary>
         public abstract void Hide();
 
+        /// <summary>
+        /// Gets whether the panel game object is currently active.
+        /// </summary>
         public bool IsActive => gameObject.activeSelf;
 
+        /// <summary>
+        /// Finds and caches a named UI component within the panel hierarchy.
+        /// </summary>
+        /// <typeparam name="T">The UI component type.</typeparam>
+        /// <param name="componentName">The child object name to search for.</param>
+        /// <returns>The matching UI component, or <c>null</c> if no match is found.</returns>
         public T GetUIComponent<T>(string componentName) where T : UIBehaviour
         {
             if (components.ContainsKey(componentName))
